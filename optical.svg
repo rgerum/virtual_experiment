@@ -105,6 +105,9 @@
             r="4.0085893"
             gradientTransform="matrix(4.6708571,0.67746879,-2.4135926,16.640685,221.02146,-107.01252)"
             gradientUnits="userSpaceOnUse" />
+    <filter id="f1" x="0" y="0">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+    </filter>
   </defs>
   <sodipodi:namedview
           id="base"
@@ -192,6 +195,7 @@
                       y="-13.266964"
                       x="-4.9499998"
                       id="image4908"
+                      filter="url(#f1)"
                       xlink:href="https://freshgoldsa.co.za/wp-content/uploads/2012/07/Appel.Foto_-300x300.jpg"
                       preserveAspectRatio="none"
                       height="26.533928"

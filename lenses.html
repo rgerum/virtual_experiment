@@ -245,9 +245,9 @@
 <div class="container">
     Wähle die Linse
     <select value="10" name="lense_chooser" id="lense_chooser" oninput="lense_changed();">
-        <option value="10">L1</option>
-        <option value="15">L2</option>
-        <option value="5">L3</option>
+        <option value="9">L1</option>
+        <option value="14.5">L2</option>
+        <option value="6">L3</option>
     </select>
     <br/>
     <div id="lens_plot"></div>
@@ -407,7 +407,7 @@
         var mean = (rays[rays.length-1][0][1]+rays[rays.length-1][rays[0].length-1][1])/2;
         document.getElementById("image").style.filter = "blur("+Math.abs(diff*10)+"px)"
         document.getElementById("image").style.transform = "scale("+mean+")"
-        document.getElementById("image4908").style.filter = "blur("+Math.abs(diff)+"px)"
+        d3.select("#f1").select("feGaussianBlur").attr("stdDeviation", Math.abs(diff)/2);
         d3.select("#image_scaler").style("transform", `scale(${mean})`);
         lens_text.text(`Linse bei ${parseInt(elements[0][0])}cm`)
         screen_text.text(`Schirm bei ${parseInt(elements[1][0])}cm`)
