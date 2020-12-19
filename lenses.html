@@ -4,17 +4,7 @@
     <meta charset="UTF-8">
     <title>Virtuelles Praktikum - Abbildung durch Linsen</title>
 
-    <script src="https://unpkg.com/mathjs/lib/browser/math.js"></script>
-
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
-
-    <!-- The loading of KaTeX is deferred to speed up page rendering -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script>
-
-    <!-- To automatically render math in text elements, include the auto-render extension: -->
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
 
@@ -22,218 +12,12 @@
     <script src="js/slider.js"></script>
     <script src="js/svg_load.js"></script>
 
-    <style>
-        button  {float:left}
-        line    {shape-rendering: crispEdges;}
-        text    {text-anchor:middle;}
-        .axis line {fill:none;stroke:#555;shape-rendering: crispEdges;}
-        .axis path  {fill:none;}
-        .axis text {font-size:10pt;fill:#555;font-family:sans-serif}
-        .plot_line {stroke-width: 2px}
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/slider.css" />
 
-        .slider.ticks {
-            font: 10px sans-serif;
-        }
-
-        .slider .track,
-        .slider .track-inset,
-        .slider .track-overlay {
-            stroke-linecap: round;
-        }
-
-        .slider .track {
-            stroke: #000;
-            stroke-opacity: 0.3;
-            stroke-width: 10px;
-        }
-
-        .slider .track-inset {
-            stroke: #ddd;
-            stroke-width: 8px;
-        }
-
-        .slider .track-overlay {
-            pointer-events: stroke;
-            stroke-width: 50px;
-            stroke: transparent;
-            #cursor: crosshair;
-        }
-
-        .slider .handle {
-            fill: #fff;
-            stroke: #000;
-            stroke-opacity: 0.5;
-            stroke-width: 1.25px;
-            cursor: pointer;
-        }
-        .slider-span {
-            position: absolute;
-            margin-left: -27px;
-            margin-top: 1px;
-        }
-
-        d-article figure {
-            text-align: center;
-        }
-        figcaption {
-            text-align: left;
-        }
-
-        #parameters td {
-            border-bottom: 1px double gray;
-            padding: 5px;
-        }
-        #parameters tr:first-child {
-            background: lightgray;
-            border: 1px solid gray;
-        }
-        #parameters td:not(:first-child) {
-            width: 80px;
-            text-align: center;
-        }
-        #parameters tr:not(:first-child) td:not(:first-child) {
-            #text-align: right;
-        }
-
-        .shaded-figure {
-            background-color: hsl(200, 20%, 97%);
-            border-top: 1px solid hsla(0, 0%, 0%, 0.1);
-            border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
-            padding: 30px 0;
-            overflow-x: auto;
-        }
-
-        .annotation {
-            fill: rgba(0,0,0,0.6);
-            font-size: 13px;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
-        }
-
-        .annotated-math {
-            display: grid;
-            margin: 0 auto;
-        }
-
-        .annotated-math d-math::shadow {
-            text-align: center;
-            background:red;
-        }
-
-        .property {
-            display: inline-block;
-            padding-right: 10px;
-        }
-
-        input[type=number] {
-            text-align: right;
-            width: 50px;
-            border-radius: 5px;
-        }
-
-        .unit {
-
-        }
-
-        .info_box {
-            background: #cecece;
-            box-shadow: 0 0 10px #cecece;
-            padding: 1px 10px;
-        }
-
-        .level {
-            border: 2px solid #484848;
-            width: 15px;
-            height: 15px;
-            display: inline-block;
-            border-radius: 20px;
-            margin: 0 2px;
-        }
-
-        .video_info {
-            border: 2px solid gray;
-            border-radius: 10px;
-            width: 307px;
-            height: 158px;
-            position: absolute;
-            visibility: hidden;
-            right: 0px;
-            z-index: 10;
-            background: white;
-        }
-
-        .info:hover .video_info {
-            visibility: visible;
-        }
-
-        .info {
-            position: relative;
-            border: 2px solid gray;
-            border-radius: 41px;
-            width: 25px;
-            text-align: center;
-            float: right;
-            background: lightgray;
-            cursor: pointer;
-        }
-
-    </style>
-
-    <style>
-        header {
-            box-sizing: border-box;
-            display: block;
-            font-family: Verdana, sans-serif;
-            font-size: 15px;
-            line-height: 22.5px;
-            padding-bottom: 32px;
-            padding-left: 16px;
-            padding-right: 16px;
-            padding-top: 32px;
-            text-align: center;
-        }
-
-        h1, h2, h3, h4, h5, h6 {
-            font-family: "Segoe UI",Arial,sans-serif;
-            font-weight: 400;
-            margin: 10px 0;
-        }
-        h1 {
-            font-size: 36px;
-        }
-
-        .container {
-            box-sizing: border-box;
-            color: rgb(0, 0, 0);
-            font-family: Verdana, sans-serif;
-            font-size: 15px;
-            line-height: 22.5px;
-            background-color: rgb(255, 255, 255);
-            box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 10px 0px, rgba(0, 0, 0, 0.19) 0px 4px 20px 0px;
-            margin-bottom: 16px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 16px;
-            max-width: 880px;
-            padding: 20px;
-        }
-    </style>
 </head>
 <body>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        if(renderMathInElement)
-        renderMathInElement(
-            document.body,
-            {
-                delimiters: [
-                    {left: "$$", right: "$$", display: false},
-                    {left: "\\[", right: "\\]", display: true},
-                    {left: "\\(", right: "\\)", display: false}
-                ]
-            }
-        );
-    });
-</script>
+
 <header>
 <h1>Virtuelles Praktikum</h1>
 <h2>Abbildung durch Linsen</h2>
@@ -243,57 +27,68 @@
     <img style="width:100%; height: auto" id="sketch" src="optical.svg" />
 </div>
 <div class="container">
-    Wähle die Linse
-    <select value="10" name="lense_chooser" id="lense_chooser" oninput="lense_changed();">
-        <option value="9">L1</option>
-        <option value="14.5">L2</option>
-        <option value="6">L3</option>
-    </select>
-    <br/>
-    <div id="lens_plot"></div>
-<div style="width:255px; heigth: 255px; overflow: hidden; border: 2px solid black; display: inline-block">
-<img id="image0" style="width: 255px;" src="https://freshgoldsa.co.za/wp-content/uploads/2012/07/Appel.Foto_-300x300.jpg"/>
-</div>
-<div style="width:255px; heigth: 255px; overflow: hidden; border: 2px solid black; display: inline-block">
-    <img id="image" style="width: 255px;" src="https://freshgoldsa.co.za/wp-content/uploads/2012/07/Appel.Foto_-300x300.jpg"/>
-</div>
+
+    <div class="property">
+        <label>Linse</label><br/>
+        <select value="10" name="lense_chooser" id="lense_chooser" oninput="lense_changed();">
+            <option value="9">L1</option>
+            <option value="14.5">L2</option>
+            <option value="6">L3</option>
+        </select>
+    </div>
+
+    <div id="slider1" class="property">
+        <label>Linse bei 0cm</label>
+        <input type="range" min="0" max="120" value="50" class="slider">
+    </div>
+    <div id="slider2" class="property">
+        <label>Schirm bei 0cm</label>
+        <input type="range" min="0" max="120" value="100" class="slider">
+    </div>
+
+    <div id="lens_plot" style="display: inline-block"></div>
+    <div style="width:255px; heigth: 255px; overflow: hidden; border: 2px solid black; display: inline-block">
+        <img id="image0" style="width: 255px;" src="https://freshgoldsa.co.za/wp-content/uploads/2012/07/Appel.Foto_-300x300.jpg"/>
+    </div>
+    <div style="width:255px; heigth: 255px; overflow: hidden; border: 2px solid black; display: inline-block">
+        <img id="image" style="width: 255px;" src="https://freshgoldsa.co.za/wp-content/uploads/2012/07/Appel.Foto_-300x300.jpg"/>
+    </div>
 
 </div>
 <script>
-    async function loadLSTMSvg() {
-        svg_lif = await replaceImgWithSvg("#sketch");
+    function clamp(num, min, max) {
+        return num <= min ? min : num >= max ? max : num;
+    }
 
+    async function loadLSTMSvg() {
+        // load the svg image and replace it as an inline svg (needed to be able to access its elements)
+        let svg_lif = await replaceImgWithSvg("#sketch");
+
+        // add ruler
         var u = d3.select("#floor").append("g").selectAll("line").data(d3.range(0, 125, 5));
         u.enter().append("line").merge(u).attr("x1", d=>(d+25)).attr("x2", d=>(d+25)).attr("y1", 0).attr("y2", 1.5).style("stroke-width", 0.4).attr("stroke", "black");
         u.exit().remove();
         u = d3.select("#floor").append("g").selectAll("line").data(d3.range(0, 125, 10));
         u.enter().append("line").merge(u).attr("x1", d=>(d+25)).attr("x2", d=>(d+25)).attr("y1", 0).attr("y2", 2).style("stroke-width", 0.5).attr("stroke", "black");
         u.exit().remove();
+
+        updateSketch();
     }
     loadLSTMSvg();
 
-    function addPlotForce(parent, title) {
+    function addPlotForce() {
         let plot1 = new Plot(d3.select("#lens_plot").append("svg"), {
             xlabel: "x position (cm)",
             ylabel: "y position (cm)",
             left: 50,
             top: 15,
             bottom: 7,
-            innerwidth: 150,
-            width: 450 + 50 + 10,
-            innerheight: 76,
-            height: 76 + 15 + 60,
+            innerwidth: 200,
+            width: 200 + 50 + 10,
+            innerheight: 176,
+            height: 176 + 15 + 60,
             colors: ["#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252","#fc5252", "#fc5252"]
         });
-        plot1.setTitle(title)
-        //let plot2 = new Plot(d3.select("#plot2"), {xlabel: "time (s)", ylabel: "force (N)", left: 100, top:5, bottom: 100, innerheight: 150, height: 150+5+100});
-
-        /*
-        let sim = parent.sim;
-        plot1.setXlim(sim.times[0], sim.times[sim.times.length - 1]);
-        plot1.setYlim(d3.min(sim.dataF), d3.max(sim.dataF));
-        plot1.setData([{x: sim.times, y: sim.dataF}], ["force"])
-        */
         plot1.setXlim(0, 50)
         plot1.setYlim(-2, 2)
         plot1.y_axis.ticks(3)
@@ -303,19 +98,7 @@
         plot1.x_axis.ticks(5)
         plot1.x_axis_svg.call(plot1.x_axis)
 
-        function update(rays) {
-            //plot1.setXlim(sim.times[0], sim.times[sim.times.length - 1]);
-            plot1.setXlim(0, 120);
-            plot1.setData(rays_to_dict(rays))
-            //plot1.setYLimAnimated(d3.min(sim.dataF), d3.max(sim.dataF));
-            plot1.setYLimAnimated(-2, 2);
-        }
-        function slider_changed(sim, d) {
-            plot1.setCursor([[sim.times[d], sim.dataF[d]]]);
-        }
-        //parent.update_sim_callbacks.push(update)
-        //parent.update_slider_callbacks.push(slider_changed)
-        return [plot1, update]
+        return plot1
     }
 
     function rays_to_dict(rays) {
@@ -332,8 +115,7 @@
         return result;
     }
     var elements = [
-        [11.2, 5],
-//        [35, 5],
+        [11, 5],
         [100, 10],
     ]
 
@@ -343,76 +125,75 @@
     }
 
     function calculateRays() {
+        // define the rays
         let rays = [[
             [0, 1, 0],
             [0, 1, Math.atan(1/elements[0][0])],
             [0, 1, Math.atan(1/(elements[0][0]-elements[0][1]))],
         ]];
 
+        // iterate over all elements
         for(let element of elements) {
+            // get position and focal length of the element
             let x2 = element[0];
             let f = element[1];
+            // iterate over all rays
             let new_rays = [];
             for(let i = 0; i < rays[0].length; i += 1) {
+                // get the properties of the rays
                 let [x1, y1, a1] = rays[rays.length-1][i];
+                // calculate the new y position at the location of the lens
                 let y2 = y1 - (x2 - x1) * Math.tan(a1);
+                // calculate the new angle
                 let a2 = Math.atan(Math.tan(a1)+y2/f);
+                // add the new position of the ray to the list
                 new_rays.push([x2, y2, a2])
             }
+            // add the new positions of all rays to the list over all times
             rays.push(new_rays);
         }
         return rays;
     }
 
-    //rays = calculateRays();
-    var [plot, update] = addPlotForce("", "");
-    //update(rays);
+    // define the plot
+    var plot = addPlotForce();
 
-    let lens_text = d3.select("#lens_plot").append("p");
-
-    let slider = new Slider(d3.select("#lens_plot").node(), {range: [0, 500-1], width: 500, value: 0, play:false, step: 1});
-
-    slider.setRange(0, 120);
-    slider.setValue(elements[0][0]);
-    slider.onValueChanged = function(d) {
-        d = parseInt(d);
-        if(d > elements[1][0]-1)
-            d = elements[1][0]-1;
-        elements[0][0] = d;
-
+    // slicer lens
+    let slider1 = d3.select("#slider1 input").node();
+    slider1.oninput = function() {
+        elements[0][0] = clamp(parseFloat(this.value), 3, elements[1][0]-3);
         updateSketch();
     };
+    slider1.value = elements[0][0];
 
-    let screen_text = d3.select("#lens_plot").append("p");
-
-    let slider2 = new Slider(d3.select("#lens_plot").node(), {range: [0, 500-1], width: 500, value: 0, play:false, step: 1});
-
-    slider2.setRange(0, 120);
-    slider2.setValue(elements[1][0]);
-    slider2.onValueChanged = function(d) {
-        d = parseFloat(d);
-        if(d < elements[0][0]+1)
-            d = elements[0][0]+1;
-        elements[1][0] = d;
+    // slider screen
+    let slider2 = d3.select("#slider2 input").node();
+    slider2.oninput = function() {
+        elements[1][0] = clamp(parseFloat(this.value), elements[0][0]+3, 120);
         updateSketch();
     };
-    slider2.play();
+    slider2.value = elements[1][0];
 
     function updateSketch() {
+        // move the lens and the screen
         d3.select("#lens1").style("transform", `translate(${elements[0][0]}px)`);
         d3.select("#screen").style("transform", `translate(${elements[1][0]}px)`);
-        rays = calculateRays()
-        update(rays);
+        // calculate the rays
+        let rays = calculateRays()
+        // plot the rays
+        plot.setData(rays_to_dict(rays))
+        // calculate the scale and blur
         var diff = rays[rays.length-1][0][1]-rays[rays.length-1][rays[0].length-1][1];
         var mean = (rays[rays.length-1][0][1]+rays[rays.length-1][rays[0].length-1][1])/2;
+        // blur and scale the images
         document.getElementById("image").style.filter = "blur("+Math.abs(diff*10)+"px)"
         document.getElementById("image").style.transform = "scale("+mean+")"
         d3.select("#f1").select("feGaussianBlur").attr("stdDeviation", Math.abs(diff)/2);
         d3.select("#image_scaler").style("transform", `scale(${mean})`);
-        lens_text.text(`Linse bei ${parseInt(elements[0][0])}cm`)
-        screen_text.text(`Schirm bei ${parseInt(elements[1][0])}cm`)
+        // update the text of the element positions
+        d3.select("#slider1 label").text(`Linse bei ${elements[0][0].toString().padStart(3, '\u2007')}cm`)
+        d3.select("#slider2 label").text(`Schirm bei ${elements[1][0].toString().padStart(3, '\u2007')}cm`)
     }
-    updateSketch();
 
 
 </script>
