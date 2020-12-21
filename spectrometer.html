@@ -117,16 +117,19 @@
         let C3 = 111.1728;
         */
         angle_to_lambda = [];
-        for(var lambda of d3.range(350, 750, 10)) {
+        ray = undefined;
+        for(var lambda of d3.range(350, 800, 10)) {
 //            lambda = 500;
             let n1 = 1;
             let l2 = (lambda*1e-3)**2;
             let n2 = rescale(lambda, 350, 750, 1.6, 1.5);
             n2 = Math.sqrt(1 + (B1*l2) / (l2-C1) + (B2*l2)/(l2-C2) + (B3*l2)/(l2-C3));
             console.log("refrec", lambda*1e-3, n1, n2)
-            ray = get_path_intersection(d3.select("#prism"), 2, 0, d3.select("#ray1"), 1, 0, n2/n1);
+            if(1) {
+                ray = get_path_intersection(d3.select("#prism"), 2, 0, d3.select("#ray1"), 1, 0, n2 / n1);
+                ray.attr("stroke", "black").attr("stroke-width", 0.1);
+            }
             p = get_path_intersection(d3.select("#prism"), 1, 2, ray, 0, 1, n1/n2);
-            ray.attr("stroke", lambda_to_color(lambda)).attr("stroke-width", 0.1).attr("opacity", 0.5);
             p.attr("stroke", lambda_to_color(lambda)).attr("stroke-width", 0.1).attr("opacity", 0.5);
             console.log("angleX", 180+Math.atan2(p.attr("y2")-p.attr("y1"), p.attr("x2")-p.attr("x1"))*180/Math.PI)
             angle_to_lambda.push([180+Math.atan2(p.attr("y2")-p.attr("y1"), p.attr("x2")-p.attr("x1"))*180/Math.PI, lambda]);
@@ -236,7 +239,7 @@
         return (5.3+d/100*4.5).toFixed(1);
     }
     function slider_to_angle(d) {
-        return rescale(d, 0, 100, 42, 47);
+        return rescale(d, 0, 100, 42, 48);
         return d/100*(55-30)+30;
     }
     function slider_to_lambda(d) {
@@ -278,14 +281,17 @@
     let use_liquid = false;
     let liquid_percentage = 1;
     function pipeline(lambda) {
-        let intensity = getValue("slider0")/5 * get_tungsten_intensity(lambda);
+        let intensity = getValue("slider0")/5;
         d3.select("#ray0").attr("opacity", clamp(intensity, 0, 1));
 
         intensity = intensity * getValue("sliderA")
         d3.select("#ray1").attr("opacity", clamp(intensity, 0, 1));
         d3.select("#shutter").attr("visibility", getValue("sliderA") ? "hidden" : "visible");
 
+        d3.select(d3.select("#prism").node().parentNode).selectAll("line").attr("opacity", clamp(intensity, 0, 1));
+
         d3.select("#ray2").attr("opacity", clamp(intensity, 0, 1));
+        intensity = intensity;
         console.log("Intensity_input", intensity);
         if(use_band_glass)
             intensity = intensity*band_absorption_glass(lambda);
@@ -299,7 +305,7 @@
         console.log("Intensity_liquid", intensity);
         intensity = scale_min_max(intensity);
         console.log("Intensity_minmax", intensity);
-        return intensity;
+        return intensity * get_tungsten_intensity(lambda);
     }
 
     function lambda_to_color(Wavelength) {

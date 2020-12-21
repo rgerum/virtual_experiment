@@ -65,16 +65,6 @@
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient872"
-       id="linearGradient2859"
-       x1="96.549988"
-       y1="99.084473"
-       x2="100.06972"
-       y2="99.084473"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-114.05183,-99.059668)" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient872"
        id="linearGradient2859-3"
        x1="96.549988"
        y1="99.084473"
@@ -82,6 +72,16 @@
        y2="99.084473"
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(38.601741,-3.6750451)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient872"
+       id="linearGradient2859-6"
+       x1="96.549988"
+       y1="99.084473"
+       x2="100.06972"
+       y2="99.084473"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(25.767458,-111.1692)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -92,7 +92,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="2.8284272"
      inkscape:cx="132.85274"
-     inkscape:cy="198.93178"
+     inkscape:cy="142.36324"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -212,7 +212,7 @@
     </g>
     <g
        id="cuvette1"
-       transform="translate(-32.689319,32.114756)">
+       transform="translate(-33.982559,33.322805)">
       <g
          id="g918"
          transform="translate(4.1619121,0.89154448)">
@@ -252,7 +252,7 @@
     </g>
     <g
        id="cuvette2"
-       transform="translate(-28.42217,32.114756)">
+       transform="translate(-29.71541,33.322805)">
       <g
          id="g918-9"
          transform="translate(4.1619121,0.89154448)">
@@ -292,7 +292,7 @@
     </g>
     <g
        id="cuvette4"
-       transform="translate(-24.155015,32.114756)">
+       transform="translate(-25.448255,33.322805)">
       <g
          id="g918-8"
          transform="translate(4.1619121,0.89154448)">
@@ -332,7 +332,7 @@
     </g>
     <g
        id="cuvette8"
-       transform="translate(-19.887868,32.114756)">
+       transform="translate(-21.181108,33.322805)">
       <g
          id="g918-0"
          transform="translate(4.1619121,0.89154448)">
@@ -372,7 +372,7 @@
     </g>
     <g
        id="cuvette3"
-       transform="translate(-15.620717,32.114756)">
+       transform="translate(-16.913957,33.322805)">
       <g
          id="g918-3"
          transform="translate(4.1619121,0.89154448)">
@@ -412,7 +412,7 @@
     </g>
     <g
        id="cuvette0"
-       transform="translate(-36.956471,32.114756)">
+       transform="translate(-38.249711,33.322805)">
       <g
          id="g1125">
         <g
@@ -458,14 +458,15 @@
        id="band_filter0"
        width="1.9047954"
        height="12.900768"
-       x="62.725346"
-       y="86.775337"
+       x="61.432106"
+       y="87.983383"
        ry="0" />
     <g
        id="g2876"
        transform="translate(107.81175,90.984985)">
       <g
-         id="arm">
+         id="arm"
+         transform="rotate(45)">
         <rect
            style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.32511;stroke-opacity:1"
            id="rect864-3"
@@ -511,13 +512,6 @@
            height="4.6769648"
            x="-44.043331"
            y="-2.3136814" />
-        <ellipse
-           style="fill:url(#linearGradient2859);fill-opacity:1;stroke:#000000;stroke-width:0.265;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="path2851"
-           cx="-15.741974"
-           cy="0.024804277"
-           rx="1.5773625"
-           ry="6.649622" />
         <path
            style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            d="M -34.133149,0.02480655 H -0.00779744"
@@ -562,5 +556,13 @@
        height="52.680775"
        x="57.7486"
        y="51.273754" />
+    <ellipse
+       style="fill:url(#linearGradient2859-6);fill-opacity:1;stroke:#000000;stroke-width:0.264999;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2851-3"
+       cx="124.07732"
+       cy="-12.084725"
+       rx="1.5773625"
+       ry="6.649622"
+       transform="rotate(45)" />
   </g>
 </svg>
