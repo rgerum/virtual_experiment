@@ -31,9 +31,11 @@
     <div class="property">
         <label>Linse</label><br/>
         <select value="10" name="lense_chooser" id="lense_chooser" oninput="lense_changed();">
-            <option value="9">L1</option>
-            <option value="14.5">L2</option>
-            <option value="6">L3</option>
+            <option value="L1">L1</option>
+            <option value="L2">L2</option>
+            <option value="L4">L4</option>
+            <option value="L6">L6</option>
+            <option value="L2L6">L2+L6</option>
         </select>
     </div>
 
@@ -72,6 +74,7 @@
         u.enter().append("line").merge(u).attr("x1", d=>(d+25)).attr("x2", d=>(d+25)).attr("y1", 0).attr("y2", 2).style("stroke-width", 0.5).attr("stroke", "black");
         u.exit().remove();
 
+        lense_changed();
         updateSketch();
     }
     loadLSTMSvg();
@@ -119,8 +122,20 @@
         [100, 10],
     ]
 
+    const lens_defs = {
+        "L1": 9,
+        "L2": -7.5,
+        "L4": 14.5,
+        "L6": 6,
+        "L2L6": 1/(-1/7.5 + 1/6),
+    }
+
     function lense_changed() {
-        elements[0][1] = parseFloat(document.getElementById("lense_chooser").value);
+        for(let lensname in lens_defs)
+            d3.select("#"+lensname).style("visibility", "hidden");
+        let name = document.getElementById("lense_chooser").value;
+        d3.select("#"+name).style("visibility", "visible");
+        elements[0][1] = parseFloat(lens_defs[name]);
         updateSketch();
     }
 
