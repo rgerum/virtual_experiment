@@ -11,6 +11,7 @@
     <script src="js/plot.js"></script>
     <script src="js/slider.js"></script>
     <script src="js/svg_load.js"></script>
+    <script src="js/path-data-polyfill.js"></script>
 
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/slider.css" />
@@ -100,104 +101,156 @@
         }
 
 
+        // Flint
+        let B1 = 1.216;
+        let B2 = 0.13366;
+        let B3 = 0.8833;
+        let C1 = 0.00857;
+        let C2 = 0.0420;
+        let C3 = 107.59;
+        /*
+        let B1 = 1.559;
+        let B2 = 0.2842;
+        let B3 = 0.9688;
+        let C1 = 0.01214;
+        let C2 = 0.0534;
+        let C3 = 111.1728;
+        */
+        angle_to_lambda = [];
+        for(var lambda of d3.range(350, 750, 10)) {
+//            lambda = 500;
+            let n1 = 1;
+            let l2 = (lambda*1e-3)**2;
+            let n2 = rescale(lambda, 350, 750, 1.6, 1.5);
+            n2 = Math.sqrt(1 + (B1*l2) / (l2-C1) + (B2*l2)/(l2-C2) + (B3*l2)/(l2-C3));
+            console.log("refrec", lambda*1e-3, n1, n2)
+            ray = get_path_intersection(d3.select("#prism"), 2, 0, d3.select("#ray1"), 1, 0, n2/n1);
+            p = get_path_intersection(d3.select("#prism"), 1, 2, ray, 0, 1, n1/n2);
+            ray.attr("stroke", lambda_to_color(lambda)).attr("stroke-width", 0.1).attr("opacity", 0.5);
+            p.attr("stroke", lambda_to_color(lambda)).attr("stroke-width", 0.1).attr("opacity", 0.5);
+            console.log("angleX", 180+Math.atan2(p.attr("y2")-p.attr("y1"), p.attr("x2")-p.attr("x1"))*180/Math.PI)
+            angle_to_lambda.push([180+Math.atan2(p.attr("y2")-p.attr("y1"), p.attr("x2")-p.attr("x1"))*180/Math.PI, lambda]);
+        }
         updateSketch();
     }
     loadLSTMSvg();
 
-    function addPlotForce() {
-        let plot1 = new Plot(d3.select("#lens_plot").append("svg"), {
-            xlabel: "x position (cm)",
-            ylabel: "y position (cm)",
-            left: 50,
-            top: 15,
-            bottom: 7,
-            innerwidth: 200,
-            width: 200 + 50 + 10,
-            innerheight: 176,
-            height: 176 + 15 + 60,
-            colors: ["#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252", "#fc5252","#fc5252", "#fc5252"]
-        });
-        plot1.setXlim(0, 50)
-        plot1.setYlim(-2, 2)
-        plot1.y_axis.ticks(3)
-        plot1.y_axis_svg.call(plot1.y_axis)
-        plot1.y_axis_svg.selectAll(".tick").selectAll("text").attr("x", -18);
+    function line_intersection(line1, line2, factor) {
+        let [x1, y1] = line1[0];
+        let [x2, y2] = line1[1];
+        let [x3, y3] = line2[0];
+        let [x4, y4] = line2[1];
+        let t = ((x1-x3)*(y3-y4) - (y1-y3)*(x3-x4))/
+                ((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4));
+        let a1 = Math.atan((y2-y1)/(x2-x1));
+        let a2 = -Math.atan((y4-y3)/(x4-x3));
+        let b = Math.PI/2-a1-a2;
+        let P = [x1 + t*(x2-x1), y1 + t*(y2-y1)];
+        console.log("input", x1, y1, x2, y2, x3, y3, x4, y4, t)
+        console.log("intersection", P, "angle", b, "n2/n1", factor)
+        let P2 = [P[0]+Math.cos(b), P[1]+Math.sin(b)];
+        console.log("Input A1", a1*180/Math.PI, "A2", a2*180/Math.PI, "B", b*180/Math.PI)
 
-        plot1.x_axis.ticks(5)
-        plot1.x_axis_svg.call(plot1.x_axis)
 
-        return plot1
-    }
+        console.log("Input ", b*180/Math.PI, b)
+        //if(b > Math.PI)
+        //    b = b - Math.PI*2
+        b2 = Math.asin(Math.sin(b)/factor);
+        //if(factor == 1)
+        //    b2 = //40/180*Math.PI
+//        if(b > Math.PI)
+//            b2 = Math.PI + Math.asin(Math.sin(b)/factor);
+        //if(b > Math.PI)
+        //    b2 = -b2;
+        console.log("Input angle", b*180/Math.PI, "output angle", b2*180/Math.PI);
+        console.log("Input angle", b, "output angle", b2);
 
-    function rays_to_dict(rays) {
-        let result = [];
-        for(let n = 0; n < rays[0].length; n+=1) {
-            result.push({x: [], y: []})
+        let normal_angle = -Math.PI/2;
+
+        P2 = [P[0]+Math.cos(a1+normal_angle-b2)*100, P[1]+Math.sin(a1+normal_angle-b2)*100];
+        if((P2[0]-P[0])*(x4-x3)+(P2[1]-P[1])*(y4-y3) < 0) {
+            normal_angle = Math.PI / 2;
+            b2 = -b2;
         }
-        for(let t = 0; t < rays.length; t+=1) {
-            for(let n = 0; n < rays[0].length; n+=1) {
-                result[n].x.push(rays[t][n][0]);
-                result[n].y.push(rays[t][n][1]);
-            }
-        }
-        return result;
-    }
-    var elements = [
-        [11, 5],
-        [100, 10],
-    ]
+        P2 = [P[0]+Math.cos(a1+normal_angle-b2)*100, P[1]+Math.sin(a1+normal_angle-b2)*100];
+        console.log("->", P, P2, a1, Math.cos(a1), Math.sin(a1))
+        uuu_lot = d3.select(d3.select("#prism").node().parentNode).append("line");
+        uuu_lot.attr("x1", P[0]).attr("y1", P[1]).attr("x2", P2[0]).attr("y2", P2[1]);
+        uuu_lot.attr("stroke", "black");
 
-    function lense_changed() {
-        elements[0][1] = parseFloat(document.getElementById("lense_chooser").value);
-        updateSketch();
+/*
+        // lot
+        P2 = [P[0]+Math.cos(a1+normal_angle)*10, P[1]+Math.sin(a1+normal_angle)*10];
+        console.log(P, P2, a1, Math.cos(a1), Math.sin(a1))
+        norm1 = d3.select(d3.select("#prism").node().parentNode).append("line");
+        norm1.attr("x1", P[0]).attr("y1", P[1]).attr("x2", P2[0]).attr("y2", P2[1]);
+        norm1.attr("stroke", "green").attr("stroke-width", 0.3);;
+        P2 = [P[0]+Math.cos(a1-normal_angle)*10, P[1]+Math.sin(a1-normal_angle)*10];
+        console.log(P, P2, a1, Math.cos(a1), Math.sin(a1))
+        norm2 = d3.select(d3.select("#prism").node().parentNode).append("line");
+        norm2.attr("x1", P[0]).attr("y1", P[1]).attr("x2", P2[0]).attr("y2", P2[1]);
+        norm2.attr("stroke", "blue").attr("stroke-width", 0.3);
+*/
+        /*
+                P2 = [P[0]+Math.cos(b), P[1]+Math.sin(b)];
+                uuu = d3.select(d3.select("#prism").node().parentNode).append("line");
+                uuu.attr("x1", P[0]).attr("y1", P[1]).attr("x2", P2[0]).attr("y2", P2[1]);
+                uuu.attr("stroke", "red");
+        *
+        uuu = d3.select(d3.select("#prism").node().parentNode).append("circle");
+        uuu.attr("cx", P[0]).attr("cy", P[1]).attr("r", 1);
+        uuu.attr("stroke", "red");
+
+        uuu = d3.select(d3.select("#prism").node().parentNode).append("circle");
+        uuu.attr("cx", x1).attr("cy", y1).attr("r", 1);
+        uuu.attr("stroke", "red");
+
+        uuu = d3.select(d3.select("#prism").node().parentNode).append("circle");
+        uuu.attr("cx", x2).attr("cy", y2).attr("r", 1);
+        uuu.attr("stroke", "red");
+
+        uuu = d3.select(d3.select("#prism").node().parentNode).append("circle");
+        uuu.attr("cx", x3).attr("cy", y3).attr("r", 1);
+        uuu.attr("stroke", "lightgreen");*/
+
+        return [P, uuu_lot];
     }
 
-    function calculateRays() {
-        // define the rays
-        let rays = [[
-            [0, 1, 0],
-            [0, 1, Math.atan(1/elements[0][0])],
-            [0, 1, Math.atan(1/(elements[0][0]-elements[0][1]))],
-        ]];
 
-        // iterate over all elements
-        for(let element of elements) {
-            // get position and focal length of the element
-            let x2 = element[0];
-            let f = element[1];
-            // iterate over all rays
-            let new_rays = [];
-            for(let i = 0; i < rays[0].length; i += 1) {
-                // get the properties of the rays
-                let [x1, y1, a1] = rays[rays.length-1][i];
-                // calculate the new y position at the location of the lens
-                let y2 = y1 - (x2 - x1) * Math.tan(a1);
-                // calculate the new angle
-                let a2 = Math.atan(Math.tan(a1)+y2/f);
-                // add the new position of the ray to the list
-                new_rays.push([x2, y2, a2])
-            }
-            // add the new positions of all rays to the list over all times
-            rays.push(new_rays);
-        }
-        return rays;
+    function get_path_intersection(input1, i11, i12, input2, i21, i22, factor) {
+        let path1 = input1.node().getPathData({normalize: true});
+        let path2 = input2.node().getPathData({normalize: true});
+        console.log(path1, [path1[i11].values, path1[i12].values]);
+        let [p, ray] = line_intersection([path1[i11].values, path1[i12].values], [path2[i21].values, path2[i22].values], factor);
+        input2.attr("x2", p[0]).attr("y2", p[1])
+        return ray;
     }
+
 
     function getValue(name) {
         return parseFloat(d3.select("#"+name+" input").node().value);
     }
 
     // define the plot
-    var plot = addPlotForce();
     function slider_to_wek(d) {
         return (5.3+d/100*4.5).toFixed(1);
     }
     function slider_to_angle(d) {
-        return rescale(d, 0, 100, 10, 35);
+        return rescale(d, 0, 100, 42, 47);
         return d/100*(55-30)+30;
     }
     function slider_to_lambda(d) {
-        return 700-d/100*(700-400);
+        let angle = slider_to_angle(d);
+        if(angle > angle_to_lambda[0][0])
+            return angle_to_lambda[0][1];
+        if(angle < angle_to_lambda[angle_to_lambda.length-1][0])
+            return angle_to_lambda[angle_to_lambda.length-1][1];
+        for(let i in angle_to_lambda) {
+//            console.log("testing angle", i, angle, angle_to_lambda[i][0], angle_to_lambda[i][1])
+            if(angle > angle_to_lambda[i][0])// && angle > angle_to_lambda[i+1][0])
+                return angle_to_lambda[i][1];
+        }
+        //return 700-d/100*(700-400);
     }
     const tungsten = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,1,3,2,4,3,3,4,5,5,6,6,7,8,9,9,10,11,11,12,12,12,13,13,14,15,15,16,16,17,17,18,18,20,19,19,20,21,21,22,22,23,24,24,25,25,26,27,28,28,29,30,31,32,33,33,35,36,37,38,39,40,41,42,43,44,46,47,48,49,51,52,54,56,58,60,64,66,69,74,76,80,84,88,91,95,99,102,105,109,111,114,118,120,122,125,128,130,133,136,138,141,145,147,150,154,157,159,163,165,167,171,173,174,177,179,181,183,186,187,190,194,196,199,204,207,211,216,220,224,228,234,237,241,246,248,249,249,248,247,246,245,244,243,243,243,243,244,244,246,246,248,249,252,255,257,262,266,270,274,281,285,290,298,302,306,313,317,320,325,328,330,332,333,333,333,333,333,333,335,334,334,335,336,337,339,341,343,345,349,351,354,360,364,368,374,378,382,389,393,397,402,407,411,414,419,421,423,426,428,429,429,429,428,428,427,427,427,426,425,425,425,425,425,425,426,427,428,428,429,430,432,433,434,436,438,440,442,444,446,448,449,450,451,452,451,451,451,451,451,450,450,450,449,449,448,447,447,446,445,444,444,443,443,442,441,441,440,439,438,437,436,435,434,433,432,431,429,428,426,425,423,421,420,417,416,415,413,411,409,408,406,405,403,402,401,400,399,397,397,396,395,394,393,392,391,391,390,389,388,386,385,384,381,379,377,374,371,368,365,362,359,356,350,346,342,336,332,328,322,318,315,310,306,304,300,296,292,289,284,281,278,273,270,267,264,261,259,256,253,251,249,245,242,240,235,233,230,225,222,219,215,211,208,203,199,195,191,185,181,177,170,165,161,153,148,144,137,131,126,121,114,109,105,98,94,90,83,79,76,70,66,63,59,56,53,51,47,45,43,40,38,36,34,33,32,30,29,28,27,26,25,24,23,22,21,21,20,19,19,18,18,17,16,16,16,15,15,15,14,14,13,13,13,12,12,12,12,14,11,11,11,10,10,10,9,9,9,9,10,8,8,8,7,7,6,6,8,8,7,5,5,4,4,4,3,3,3,2,2,2,2,3,1,1,1,2,2,2,2,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     function get_tungsten_intensity(wavelength) {
@@ -249,7 +302,64 @@
         return intensity;
     }
 
-    function lambda_to_color(lambda) {
+    function lambda_to_color(Wavelength) {
+        const Gamma = 0.80;
+        const IntensityMax = 255;
+
+        let factor;
+        let Red, Green, Blue;
+
+        if((Wavelength >= 380) && (Wavelength < 440)) {
+            Red = -(Wavelength - 440) / (440 - 380);
+            Green = 0.0;
+            Blue = 1.0;
+        } else if((Wavelength >= 440) && (Wavelength < 490)) {
+            Red = 0.0;
+            Green = (Wavelength - 440) / (490 - 440);
+            Blue = 1.0;
+        } else if((Wavelength >= 490) && (Wavelength < 510)) {
+            Red = 0.0;
+            Green = 1.0;
+            Blue = -(Wavelength - 510) / (510 - 490);
+        } else if((Wavelength >= 510) && (Wavelength < 580)) {
+            Red = (Wavelength - 510) / (580 - 510);
+            Green = 1.0;
+            Blue = 0.0;
+        } else if((Wavelength >= 580) && (Wavelength < 645)) {
+            Red = 1.0;
+            Green = -(Wavelength - 645) / (645 - 580);
+            Blue = 0.0;
+        } else if((Wavelength >= 645) && (Wavelength < 781)) {
+            Red = 1.0;
+            Green = 0.0;
+            Blue = 0.0;
+        } else {
+            Red = 0.0;
+            Green = 0.0;
+            Blue = 0.0;
+        }
+
+        // Let the intensity fall off near the vision limits
+
+        if((Wavelength >= 380) && (Wavelength < 420)) {
+            factor = 0.3 + 0.7 * (Wavelength - 380) / (420 - 380);
+        } else if((Wavelength >= 420) && (Wavelength < 701)) {
+            factor = 1.0;
+        } else if((Wavelength >= 701) && (Wavelength < 781)) {
+            factor = 0.3 + 0.7 * (780 - Wavelength) / (780 - 700);
+        } else {
+            factor = 0.0;
+        }
+
+
+        let rgb = [0, 0, 0];
+
+        // Don't want 0^x = 1 for x <> 0
+        rgb[0] = Red == 0.0 ? 0 : parseInt(Math.round(IntensityMax * Math.pow(Red * factor, Gamma)));
+        rgb[1] = Green == 0.0 ? 0 : parseInt(Math.round(IntensityMax * Math.pow(Green * factor, Gamma)));
+        rgb[2] = Blue == 0.0 ? 0 : parseInt(Math.round(IntensityMax * Math.pow(Blue * factor, Gamma)));
+
+        return `rgba(${parseInt(Red*255)}, ${parseInt(Green*255)}, ${parseInt(Blue*255)}, ${factor})`;
         if(lambda > 650)
             return `rgba(255, 0, 0, ${(700-lambda)/50})`;
         return `hsl(${ (650 - lambda) * 270 / 250}, 100%, 50%)`;
