@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Virtuelles Praktikum - Abbildung durch Linsen</title>
-
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <title>Virtuelles Praktikum - Spektrometer</title>
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
 
@@ -12,6 +10,7 @@
     <script src="js/slider.js"></script>
     <script src="js/svg_load.js"></script>
     <script src="js/path_data_polyfill.js"></script>
+    <script src="js/helper_functions.js"></script>
 
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/slider.css" />
@@ -25,13 +24,13 @@
 </header>
 
 <div class="container">
-    <img style="width:100%; height: auto" id="sketch" src="spektrometer.svg" />
+    <img style="width:100%; height: auto" id="sketch" alt="Sketch of the spektrometer" src="spektrometer.svg" />
 </div>
 <div class="container">
 
     <div class="property">
-        <label>Cuvette</label><br/>
-        <select value="10" name="cuvette" id="cuvette_input" oninput="updateSketch();">
+        <label for="cuvette_input">Cuvette</label><br/>
+        <select name="cuvette" id="cuvette_input" oninput="updateSketch();">
             <option value="-1">-</option>
             <option value="0">water</option>
             <option value="1">1/1</option>
@@ -43,63 +42,59 @@
     </div>
 
     <div id="sliderA" class="property">
-        <label>Off/On</label>
-        <input type="range" min="0" max="1" value="0" class="slider" style="width:50px">
+        <label for="input_onoff">Off/On</label>
+        <input id="input_onoff" type="range" min="0" max="1" value="0" class="slider" style="width:50px">
     </div>
     <div id="slider0" class="property">
-        <label>Intensity</label>
-        <input type="range" min="0" max="5" value="5" class="slider">
+        <label for="input_intensity">Intensity</label>
+        <input id="input_intensity" type="range" min="0" max="5" value="5" class="slider">
     </div>
     <div id="slider1" class="property">
-        <label>WEK </label>
-        <input type="range" min="0" max="100" value="50" class="slider">
+        <label for="input_lambda">lambda </label>
+        <input id="input_lambda" type="range" min="0" max="100" value="50" class="slider">
     </div>
     <div id="slider_filter" class="property">
-        <label>Bandabsorption Filter</label>
-        <input type="range" min="0" max="1" value="0" class="slider" style="width:50px">
+        <label for="input_filter">Bandabsorption Filter</label>
+        <input id="input_filter" type="range" min="0" max="1" value="0" class="slider" style="width:50px">
     </div>
     <div id="slider2" class="property">
-        <label>Minimum</label>
-        <input type="range" min="0" max="100" value="0" class="slider">
+        <label for="input_minimum">Minimum</label>
+        <input id="input_minimum" type="range" min="0" max="100" value="0" class="slider">
     </div>
     <div id="slider3" class="property">
-        <label>Maximum</label>
-        <input type="range" min="0" max="100" value="100" class="slider">
+        <label for="input_maximum">Maximum</label>
+        <input id="input_maximum" type="range" min="0" max="100" value="100" class="slider">
     </div>
 
 </div>
 <script>
-    function clamp(num, min, max) {
-        return num <= min ? min : num >= max ? max : num;
-    }
-    function rescale(num, min1, max1, min2, max2) {
-        return (num-min1)/(max1-min1) * (max2 - min2) + min2;
-    }
-
+    let angle_to_lambda = [];
     async function loadLSTMSvg() {
         // load the svg image and replace it as an inline svg (needed to be able to access its elements)
-        let svg_lif = await replaceImgWithSvg("#sketch");
+        await replaceImgWithSvg("#sketch");
 
-        // add ruler
-        let u = d3.select("#display_origin").append("g");
-        u2 = u.selectAll("line");
-        u2 = u2.data(d3.range(0, 1.001, 0.1)).enter().append("line");
-        u2.attr("x1", 6.5).attr("x2", 8).attr("stroke", "black").attr("stroke-width", 0.1).attr("transform", d=>`rotate(${d*180-180})`)
+        // the scale to the display
+        let scale_group = d3.select("#display_origin").append("g");
+        // the major ticks
+        let scale_ticks = scale_group.selectAll("line");
+        scale_ticks = scale_ticks.data(d3.range(0, 1.001, 0.1)).enter().append("line");
+        scale_ticks.attr("x1", 6.5).attr("x2", 8).attr("stroke", "black").attr("stroke-width", 0.1).attr("transform", d=>`rotate(${d*180-180})`)
 
-        u3 = u.selectAll("text");
-        u3 = u3.data(d3.range(0, 1.001, 0.1)).enter().append("text");
-        u3.attr("y", -8.4).attr("x", 0).attr("font-size", 1).text(d=>d.toFixed(1)).attr("text-anchor", "middle").attr("transform", d=>`rotate(${d*180-90})`);
+        // the text of the major ticks
+        let scale_text = scale_group.selectAll("text");
+        scale_text = scale_text.data(d3.range(0, 1.001, 0.1)).enter().append("text");
+        scale_text.attr("y", -8.4).attr("x", 0).attr("font-size", 1).text(d=>d.toFixed(1)).attr("text-anchor", "middle").attr("transform", d=>`rotate(${d*180-90})`);
 
-        u = d3.select("#display_origin").append("g");
-        u2 = u.selectAll("line");
-        u2 = u2.data(d3.range(0, 1.001, 0.02)).enter().append("line");
-        u2.attr("x1", 7).attr("x2", 8).attr("stroke", "black").attr("stroke-width", 0.1).attr("transform", d=>`rotate(${d*180-180})`)
+        // the minor ticks
+        let scale_group2 = d3.select("#display_origin").append("g");
+        let scale_ticks2 = scale_group2.selectAll("line");
+        scale_ticks2 = scale_ticks2.data(d3.range(0, 1.001, 0.02)).enter().append("line");
+        scale_ticks2.attr("x1", 7).attr("x2", 8).attr("stroke", "black").attr("stroke-width", 0.1).attr("transform", d=>`rotate(${d*180-180})`)
 
+        // set the color of the cuvettes
         for(let concentration of [0, 1, 2, 4, 8, 3]) {
-            console.log(d3.select("#cuvette" + concentration + "_content").node());
             d3.select("#cuvette" + concentration + "_content").style("fill-opacity", 0.1 + 0.4 * (1/concentration))
         }
-
 
         // Flint
         let B1 = 1.216;
@@ -108,296 +103,150 @@
         let C1 = 0.00857;
         let C2 = 0.0420;
         let C3 = 107.59;
-        /*
-        let B1 = 1.559;
-        let B2 = 0.2842;
-        let B3 = 0.9688;
-        let C1 = 0.01214;
-        let C2 = 0.0534;
-        let C3 = 111.1728;
-        */
         angle_to_lambda = [];
-        ray = undefined;
-        for(var lambda of d3.range(350, 800, 10)) {
-//            lambda = 500;
+        // iterate over the wavelength in nm
+        for(let lambda of d3.range(850, 340, -10)) {
             let n1 = 1;
-            let l2 = (lambda*1e-3)**2;
-            let n2 = rescale(lambda, 350, 750, 1.6, 1.5);
-            n2 = Math.sqrt(1 + (B1*l2) / (l2-C1) + (B2*l2)/(l2-C2) + (B3*l2)/(l2-C3));
-            console.log("refrec", lambda*1e-3, n1, n2)
-            if(1) {
-                ray = get_path_intersection(d3.select("#prism"), 2, 0, d3.select("#ray1"), 1, 0, n2 / n1);
-                ray.attr("stroke", "black").attr("stroke-width", 0.1);
-            }
-            p = get_path_intersection(d3.select("#prism"), 1, 2, ray, 0, 1, n1/n2);
-            p.attr("stroke", lambda_to_color(lambda)).attr("stroke-width", 0.1).attr("opacity", 0.5);
-            console.log("angleX", 180+Math.atan2(p.attr("y2")-p.attr("y1"), p.attr("x2")-p.attr("x1"))*180/Math.PI)
-            angle_to_lambda.push([180+Math.atan2(p.attr("y2")-p.attr("y1"), p.attr("x2")-p.attr("x1"))*180/Math.PI, lambda]);
+            let l2 = (lambda*1e-3)**2;  // lambda in µm squared
+            // calculate the refractory index depending on the wavelength
+            let n2 = Math.sqrt(1 + (B1*l2) / (l2-C1) + (B2*l2)/(l2-C2) + (B3*l2)/(l2-C3));
+            // refraction at the outer surface of the prism
+            let ray1 = get_path_intersection(d3.select("#prism"), 2, 0, d3.select("#ray1"), 1, 0, n2 / n1);
+            ray1.attr("stroke", "black").attr("stroke-width", 0.1);
+            // refraction at the inner surface of the prism
+            let ray2 = get_path_intersection(d3.select("#prism"), 1, 2, ray1, 0, 1, n1/n2);
+            ray2.attr("stroke", lambda_to_color(lambda)).attr("stroke-width", 0.1).attr("opacity", 0.5);
+            // memorize the angles and wavelength
+            angle_to_lambda.push([180+Math.atan2(ray2.attr("y2")-ray2.attr("y1"), ray2.attr("x2")-ray2.attr("x1"))*180/Math.PI, lambda]);
         }
         updateSketch();
     }
     loadLSTMSvg();
 
-    function line_intersection(line1, line2, factor) {
-        let [x1, y1] = line1[0];
-        let [x2, y2] = line1[1];
-        let [x3, y3] = line2[0];
-        let [x4, y4] = line2[1];
-        let t = ((x1-x3)*(y3-y4) - (y1-y3)*(x3-x4))/
-                ((x1-x2)*(y3-y4) - (y1-y2)*(x3-x4));
-        let a1 = Math.atan((y2-y1)/(x2-x1));
-        let a2 = -Math.atan((y4-y3)/(x4-x3));
-        let b = Math.PI/2-a1-a2;
-        let P = [x1 + t*(x2-x1), y1 + t*(y2-y1)];
-        console.log("input", x1, y1, x2, y2, x3, y3, x4, y4, t)
-        console.log("intersection", P, "angle", b, "n2/n1", factor)
-        let P2 = [P[0]+Math.cos(b), P[1]+Math.sin(b)];
-        console.log("Input A1", a1*180/Math.PI, "A2", a2*180/Math.PI, "B", b*180/Math.PI)
 
-
-        console.log("Input ", b*180/Math.PI, b)
-        //if(b > Math.PI)
-        //    b = b - Math.PI*2
-        b2 = Math.asin(Math.sin(b)/factor);
-        //if(factor == 1)
-        //    b2 = //40/180*Math.PI
-//        if(b > Math.PI)
-//            b2 = Math.PI + Math.asin(Math.sin(b)/factor);
-        //if(b > Math.PI)
-        //    b2 = -b2;
-        console.log("Input angle", b*180/Math.PI, "output angle", b2*180/Math.PI);
-        console.log("Input angle", b, "output angle", b2);
-
-        let normal_angle = -Math.PI/2;
-
-        P2 = [P[0]+Math.cos(a1+normal_angle-b2)*100, P[1]+Math.sin(a1+normal_angle-b2)*100];
-        if((P2[0]-P[0])*(x4-x3)+(P2[1]-P[1])*(y4-y3) < 0) {
-            normal_angle = Math.PI / 2;
-            b2 = -b2;
-        }
-        P2 = [P[0]+Math.cos(a1+normal_angle-b2)*100, P[1]+Math.sin(a1+normal_angle-b2)*100];
-        console.log("->", P, P2, a1, Math.cos(a1), Math.sin(a1))
-        uuu_lot = d3.select(d3.select("#prism").node().parentNode).append("line");
-        uuu_lot.attr("x1", P[0]).attr("y1", P[1]).attr("x2", P2[0]).attr("y2", P2[1]);
-        uuu_lot.attr("stroke", "black");
-
-/*
-        // lot
-        P2 = [P[0]+Math.cos(a1+normal_angle)*10, P[1]+Math.sin(a1+normal_angle)*10];
-        console.log(P, P2, a1, Math.cos(a1), Math.sin(a1))
-        norm1 = d3.select(d3.select("#prism").node().parentNode).append("line");
-        norm1.attr("x1", P[0]).attr("y1", P[1]).attr("x2", P2[0]).attr("y2", P2[1]);
-        norm1.attr("stroke", "green").attr("stroke-width", 0.3);;
-        P2 = [P[0]+Math.cos(a1-normal_angle)*10, P[1]+Math.sin(a1-normal_angle)*10];
-        console.log(P, P2, a1, Math.cos(a1), Math.sin(a1))
-        norm2 = d3.select(d3.select("#prism").node().parentNode).append("line");
-        norm2.attr("x1", P[0]).attr("y1", P[1]).attr("x2", P2[0]).attr("y2", P2[1]);
-        norm2.attr("stroke", "blue").attr("stroke-width", 0.3);
-*/
-        /*
-                P2 = [P[0]+Math.cos(b), P[1]+Math.sin(b)];
-                uuu = d3.select(d3.select("#prism").node().parentNode).append("line");
-                uuu.attr("x1", P[0]).attr("y1", P[1]).attr("x2", P2[0]).attr("y2", P2[1]);
-                uuu.attr("stroke", "red");
-        *
-        uuu = d3.select(d3.select("#prism").node().parentNode).append("circle");
-        uuu.attr("cx", P[0]).attr("cy", P[1]).attr("r", 1);
-        uuu.attr("stroke", "red");
-
-        uuu = d3.select(d3.select("#prism").node().parentNode).append("circle");
-        uuu.attr("cx", x1).attr("cy", y1).attr("r", 1);
-        uuu.attr("stroke", "red");
-
-        uuu = d3.select(d3.select("#prism").node().parentNode).append("circle");
-        uuu.attr("cx", x2).attr("cy", y2).attr("r", 1);
-        uuu.attr("stroke", "red");
-
-        uuu = d3.select(d3.select("#prism").node().parentNode).append("circle");
-        uuu.attr("cx", x3).attr("cy", y3).attr("r", 1);
-        uuu.attr("stroke", "lightgreen");*/
-
-        return [P, uuu_lot];
-    }
-
-
-    function get_path_intersection(input1, i11, i12, input2, i21, i22, factor) {
-        let path1 = input1.node().getPathData({normalize: true});
-        let path2 = input2.node().getPathData({normalize: true});
-        console.log(path1, [path1[i11].values, path1[i12].values]);
-        let [p, ray] = line_intersection([path1[i11].values, path1[i12].values], [path2[i21].values, path2[i22].values], factor);
-        input2.attr("x2", p[0]).attr("y2", p[1])
-        return ray;
-    }
-
-
-    function getValue(name) {
-        return parseFloat(d3.select("#"+name+" input").node().value);
-    }
-
-    // define the plot
     function slider_to_wek(d) {
-        return (5.3+d/100*4.5).toFixed(1);
+        return rescale(d, 0, 100, 5.3, 9.8).toFixed(1);
     }
     function slider_to_angle(d) {
-        return rescale(d, 0, 100, 42, 48);
-        return d/100*(55-30)+30;
+        return rescale(d, 0, 100, 43.74, 48);
     }
     function slider_to_lambda(d) {
-        let angle = slider_to_angle(d);
-        if(angle > angle_to_lambda[0][0])
-            return angle_to_lambda[0][1];
-        if(angle < angle_to_lambda[angle_to_lambda.length-1][0])
-            return angle_to_lambda[angle_to_lambda.length-1][1];
-        for(let i in angle_to_lambda) {
-//            console.log("testing angle", i, angle, angle_to_lambda[i][0], angle_to_lambda[i][1])
-            if(angle > angle_to_lambda[i][0])// && angle > angle_to_lambda[i+1][0])
-                return angle_to_lambda[i][1];
-        }
-        //return 700-d/100*(700-400);
+        return interpolate_nearest(slider_to_angle(d), angle_to_lambda);
     }
-    const tungsten = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,1,3,2,4,3,3,4,5,5,6,6,7,8,9,9,10,11,11,12,12,12,13,13,14,15,15,16,16,17,17,18,18,20,19,19,20,21,21,22,22,23,24,24,25,25,26,27,28,28,29,30,31,32,33,33,35,36,37,38,39,40,41,42,43,44,46,47,48,49,51,52,54,56,58,60,64,66,69,74,76,80,84,88,91,95,99,102,105,109,111,114,118,120,122,125,128,130,133,136,138,141,145,147,150,154,157,159,163,165,167,171,173,174,177,179,181,183,186,187,190,194,196,199,204,207,211,216,220,224,228,234,237,241,246,248,249,249,248,247,246,245,244,243,243,243,243,244,244,246,246,248,249,252,255,257,262,266,270,274,281,285,290,298,302,306,313,317,320,325,328,330,332,333,333,333,333,333,333,335,334,334,335,336,337,339,341,343,345,349,351,354,360,364,368,374,378,382,389,393,397,402,407,411,414,419,421,423,426,428,429,429,429,428,428,427,427,427,426,425,425,425,425,425,425,426,427,428,428,429,430,432,433,434,436,438,440,442,444,446,448,449,450,451,452,451,451,451,451,451,450,450,450,449,449,448,447,447,446,445,444,444,443,443,442,441,441,440,439,438,437,436,435,434,433,432,431,429,428,426,425,423,421,420,417,416,415,413,411,409,408,406,405,403,402,401,400,399,397,397,396,395,394,393,392,391,391,390,389,388,386,385,384,381,379,377,374,371,368,365,362,359,356,350,346,342,336,332,328,322,318,315,310,306,304,300,296,292,289,284,281,278,273,270,267,264,261,259,256,253,251,249,245,242,240,235,233,230,225,222,219,215,211,208,203,199,195,191,185,181,177,170,165,161,153,148,144,137,131,126,121,114,109,105,98,94,90,83,79,76,70,66,63,59,56,53,51,47,45,43,40,38,36,34,33,32,30,29,28,27,26,25,24,23,22,21,21,20,19,19,18,18,17,16,16,16,15,15,15,14,14,13,13,13,12,12,12,12,14,11,11,11,10,10,10,9,9,9,9,10,8,8,8,7,7,6,6,8,8,7,5,5,4,4,4,3,3,3,2,2,2,2,3,1,1,1,2,2,2,2,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+    //const tungsten0 = [0.0000,0.0000,0.0000,0.0003,0.0014,0.0040,0.0068,0.0092,0.0120,0.0148,0.0172,0.0202,0.0240,0.0280,0.0320,0.0360,0.0402,0.0452,0.0508,0.0560,0.0614,0.0680,0.0748,0.0812,0.0883,0.0963,0.1055,0.1163,0.1283,0.1415,0.1563,0.1720,0.1878,0.2030,0.2184,0.2351,0.2520,0.2692,0.2868,0.3040,0.3214,0.3400,0.3588,0.3770,0.3948,0.4120,0.4292,0.4468,0.4638,0.4800,0.4960,0.5120,0.5280,0.5440,0.5598,0.5750,0.5902,0.6056,0.6198,0.6332,0.6468,0.6600,0.6734,0.6880,0.7026,0.7157,0.7280,0.7400,0.7520,0.7640,0.7758,0.7868,0.7972,0.8080,0.8188,0.8290,0.8388,0.8480,0.8572,0.8668,0.8758,0.8840,0.8920,0.9000,0.9080,0.9158,0.9228,0.9292,0.9360,0.9428,0.9489,0.9548,0.9598,0.9640,0.9680,0.9720,0.9760,0.9800,0.9840,0.9878,0.9908,0.9929,0.9948,0.9960,0.9972,0.9988,0.9998,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,0.9998,0.9988,0.9972,0.9962,0.9958,0.9948,0.9930,0.9910,0.9890,0.9868,0.9840,0.9812,0.9788,0.9760,0.9732,0.9708,0.9678,0.9640,0.9600,0.9560,0.9520,0.9480,0.9440,0.9400,0.9360,0.9320,0.9278,0.9228,0.9172,0.9122,0.9080,0.9040,0.8998,0.8948,0.8892,0.8840,0.8788,0.8732,0.8680,0.8628,0.8570,0.8510,0.8452,0.8400,0.8348,0.8290,0.8230,0.8172,0.8120,0.8066,0.8000,0.7934,0.7880,0.7828,0.7772,0.7720,0.7666,0.7600,0.7534,0.7480,0.7426,0.7360,0.7294,0.7240,0.7186,0.7120,0.7054,0.7000,0.6948,0.6890,0.6830,0.6770,0.6710,0.6650,0.6590,0.6530,0.6470,0.6412,0.6360,0.6308,0.6250,0.6190,0.6132,0.6080,0.6028,0.5972,0.5920,0.5868,0.5812,0.5760,0.5708,0.5652,0.5600,0.5548,0.5492,0.5442,0.5400,0.5358,0.5308,0.5252,0.5202,0.5160,0.5118,0.5068,0.5010,0.4953,0.4904,0.4870,0.4838,0.4800,0.4760,0.4720,0.4680,0.4638,0.4590,0.4544,0.4510,0.4478,0.4440,0.4400,0.4360,0.4320,0.4280,0.4240,0.4202,0.4172,0.4148,0.4118,0.4082,0.4052,0.4028,0.3998,0.3960,0.3922,0.3892,0.3868,0.3838,0.3802,0.3772,0.3748,0.3718,0.3682,0.3652,0.3628,0.3598,0.3562,0.3532,0.3508,0.3478,0.3442,0.3412,0.3388,0.3358,0.3320,0.3282,0.3252,0.3228,0.3200,0.3172,0.3148,0.3120,0.3092,0.3068,0.3040,0.3012,0.2988,0.2958,0.2922,0.2892,0.2868,0.2840,0.2812,0.2790,0.2770,0.2748,0.2720,0.2692,0.2670,0.2650,0.2628,0.2600,0.2572,0.2550,0.2530,0.2508,0.2480,0.2452,0.2430,0.2410,0.2390,0.2370,0.2350,0.2330,0.2308,0.2280,0.2254,0.2240,0.2226,0.2200,0.2174,0.2160,0.2148,0.2130,0.2110,0.2090,0.2070,0.2050,0.2030,0.2010,0.1990,0.1970,0.1950,0.1932,0.1918,0.1898,0.1874,0.1860,0.1848,0.1830,0.1812,0.1800,0.1788,0.1770,0.1750,0.1732,0.1722,0.1718,0.1708,0.1690,0.1670,0.1652,0.1640,0.1628,0.1612,0.1600,0.1588,0.1572,0.1560,0.1548,0.1532,0.1520,0.1508,0.1492,0.1482,0.1478,0.1468,0.1452,0.1442,0.1438,0.1428,0.1412,0.1400,0.1388,0.1372,0.1360,0.1348,0.1332,0.1322,0.1318,0.1308,0.1292,0.1282,0.1280,0.1278,0.1268,0.1252,0.1242,0.1238,0.1228,0.1212,0.1202,0.1200,0.1198,0.1188,0.1172,0.1162,0.1158,0.1148,0.1132,0.1122,0.1118,0.1108,0.1092,0.1082,0.1080,0.1080,0.1078,0.1068,0.1052,0.1042,0.1040,0.1038,0.1028,0.1014];
+    const tungsten = [0.0003,0.0015,0.0036,0.0062,0.0096,0.0129,0.0158,0.0194,0.0237,0.0273,0.0304,0.0350,0.0405,0.0457,0.0515,0.0574,0.0636,0.0706,0.0777,0.0850,0.0924,0.1008,0.1101,0.1196,0.1295,0.1402,0.1520,0.1639,0.1759,0.1880,0.2010,0.2142,0.2275,0.2417,0.2562,0.2715,0.2868,0.3014,0.3161,0.3319,0.3493,0.3670,0.3842,0.4022,0.4211,0.4402,0.4596,0.4799,0.5010,0.5213,0.5406,0.5598,0.5787,0.5966,0.6139,0.6316,0.6490,0.6648,0.6797,0.6952,0.7112,0.7256,0.7383,0.7515,0.7653,0.7784,0.7906,0.8024,0.8131,0.8232,0.8340,0.8454,0.8559,0.8646,0.8723,0.8806,0.8897,0.8981,0.9057,0.9139,0.9217,0.9282,0.9344,0.9411,0.9471,0.9521,0.9569,0.9617,0.9665,0.9713,0.9758,0.9794,0.9823,0.9856,0.9890,0.9916,0.9938,0.9952,0.9966,0.9986,0.9997,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,0.9997,0.9986,0.9966,0.9952,0.9938,0.9916,0.9893,0.9868,0.9845,0.9820,0.9797,0.9772,0.9746,0.9713,0.9679,0.9651,0.9617,0.9584,0.9555,0.9519,0.9473,0.9426,0.9381,0.9345,0.9316,0.9279,0.9234,0.9187,0.9139,0.9091,0.9043,0.8995,0.8947,0.8900,0.8852,0.8804,0.8756,0.8708,0.8660,0.8612,0.8565,0.8517,0.8466,0.8407,0.8340,0.8280,0.8230,0.8182,0.8134,0.8086,0.8035,0.7976,0.7909,0.7850,0.7799,0.7751,0.7701,0.7641,0.7574,0.7515,0.7464,0.7416,0.7366,0.7306,0.7239,0.7180,0.7129,0.7079,0.7019,0.6952,0.6893,0.6842,0.6794,0.6746,0.6696,0.6636,0.6569,0.6510,0.6459,0.6409,0.6349,0.6282,0.6223,0.6172,0.6124,0.6077,0.6028,0.5978,0.5919,0.5852,0.5792,0.5742,0.5694,0.5646,0.5598,0.5550,0.5502,0.5455,0.5406,0.5356,0.5297,0.5230,0.5170,0.5120,0.5072,0.5024,0.4976,0.4928,0.4881,0.4835,0.4799,0.4770,0.4734,0.4689,0.4641,0.4593,0.4545,0.4498,0.4450,0.4402,0.4357,0.4321,0.4292,0.4256,0.4210,0.4163,0.4118,0.4081,0.4053,0.4017,0.3974,0.3938,0.3909,0.3873,0.3830,0.3794,0.3766,0.3732,0.3698,0.3670,0.3636,0.3603,0.3574,0.3541,0.3507,0.3481,0.3457,0.3431,0.3397,0.3363,0.3335,0.3301,0.3268,0.3242,0.3218,0.3194,0.3170,0.3146,0.3122,0.3096,0.3062,0.3029,0.3003,0.2978,0.2955,0.2930,0.2907,0.2883,0.2859,0.2835,0.2811,0.2787,0.2763,0.2739,0.2715,0.2691,0.2668,0.2643,0.2620,0.2596,0.2572,0.2548,0.2524,0.2500,0.2476,0.2455,0.2440,0.2426,0.2404,0.2381,0.2356,0.2333,0.2311,0.2297,0.2282,0.2260,0.2237,0.2213,0.2189,0.2167,0.2153,0.2139,0.2119,0.2105,0.2091,0.2069,0.2046,0.2024,0.2010,0.1995,0.1976,0.1962,0.1947,0.1925,0.1902,0.1880,0.1866,0.1852,0.1832,0.1818,0.1804,0.1785,0.1770,0.1756,0.1737,0.1722,0.1708,0.1689,0.1675,0.1660,0.1641,0.1627,0.1613,0.1593,0.1579,0.1565,0.1545,0.1531,0.1517,0.1498,0.1486,0.1481,0.1469,0.1450,0.1435,0.1421,0.1402,0.1390,0.1385,0.1373,0.1354,0.1340,0.1326,0.1306,0.1294,0.1289,0.1277,0.1258,0.1247,0.1241,0.1230,0.1211,0.1199,0.1194,0.1182,0.1163,0.1151,0.1148,0.1146,0.1134,0.1115,0.1103,0.1098,0.1086,0.1067,0.1055,0.1053,0.1050,0.1038,0.1019,0.1008,0.1005,0.1002,0.0990,0.0971,0.0960,0.0957,0.0957,0.0957];
     function get_tungsten_intensity(wavelength) {
-        return tungsten[parseInt((wavelength-300)/(900-300)*tungsten.length)]/464;
+        return interpolate_nearest_grid(wavelength, tungsten, 270, 2500);
     }
 
     const band_glass = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,11,14,39,42,81,130,138,174,182,227,233,267,286,289,303,304,309,309,309,309,308,307,307,308,309,310,313,314,316,318,320,323,321,321,317,316,314,311,311,311,311,312,318,319,328,335,336,339,340,343,344,344,346,347,347,347,348,349,347,346,345,344,342,341,333,323,320,305,302,287,284,273,264,263,263,263,263,265,266,278,292,293,302,305,313,317,324,332,333,339,340,341,342,343,341,338,337,333,326,322,318,317,310,309,307,304,303,298,297,291,290,286,286,286,286,287,286,285,269,217,211,147,141,81,78,58,58,58,58,61,62,73,71,63,60,47,45,29,27,19,13,11,7,7,5,4,3,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,4,4,5,7,8,10,12,15,16,17,18,21,21,21,21,19,18,18,18,17,17,16,16,15,14,13,12,12,12,11,11,11,10,9,7,6,5,4,4,4,3,2,2,2,2,2,4,6,6,7,8,9,11,13,15,16,16,14,14,12,11,11,11,11,11,14,15,21,27,29,44,46,62,66,89,95,102,123,126,139,153,155,165,166,165,159,149,148,139,135,126,122,111,100,93,87,83,74,70,67,58,54,45,41,32,29,21,13,11,7,5,4,3,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,5,10,12,20,23,34,47,51,55,60,85,91,100,115,122,142,150,169,176,196,214,220,235,240,246,249,258,266,268,273,274,277,278,279,279,279,279,279,278,277,275,273,270,268,263,261,254,251,248,235,233,222,219,199,166,162,139,133,108,62,57,35,31,10,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,8,9,14,17,28,30,44,57,60,82,86,104,108,149,158,167,194,203,232,236,252,271,274,290,293,299,301,308,312,309,308,302,301,286,278,275,256,254,246,245,239,236,235,233,232,229,228,228,228,231,232,238,239,248,250,258,266,268,276,279,287,290,297,299,301,310,311,312,313,318,321,324,326,328,329,330,332,334,335,336,337,340,344,345,348,350,351,353,354,355,356,357,357,357,358,359,359,359,358,358,357,357,357,357,356,355,352,352,350,346,345,340,338,336,334,328,319,315,306,301,289,284,270,256,250,236,230,225,219,204,190,184,171,166,153,148,136,126,122,118,114,105,97,95,89,87,84,83,81,81,81,82,85,87,92,93,99,109,113,124,127,137,140,148,156,160,170,174,180,187,194,202,206,218,225,233,241,248,254,258,267,270,273,276,284,291,294,300,302,306,308,312,315,316,318,320,321,321,321,322,322,321,319,318,317,316,315,310,309,306,301,299,293,291,284,282,273,264,260,249,245,241,236,221,205,202,180,172,150,142,121,93,84,69,65,46,43,23,6,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,4,6,7,13,18,20,30,33,44,48,51,61,65,75,78,88,90,95,98,98,96,90,88,85,79,76,66,60,56,53,43,39,36,34,31,25,22,16,11,9,5,4,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
     function band_absorption_glass(wavelength) {
-        return band_glass[parseInt((wavelength-350)/(800-350)*band_glass.length)]/400;
+        return interpolate_nearest_grid(wavelength, band_glass, 350, 800)/400;
     }
+    const green_dye = [0.01,0.00,0.01,0.01,0.01,0.01,0.00,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.00,0.01,0.00,0.01,0.00,0.01,0.01,0.01,0.01,0.01,0.00,0.01,0.01,0.01,0.00,0.00,0.00,0.00,0.00,0.01,0.01,0.00,0.01,0.01,0.01,0.01,0.01,0.01,0.00,0.00,0.01,0.00,0.00,0.00,0.01,0.01,0.01,0.00,0.00,0.00,0.01,0.00,0.00,0.01,0.01,0.00,0.00,0.01,0.00,0.00,0.00,0.00,0.00,0.00,0.01,0.00,0.00,0.00,0.00,0.01,0.00,0.00,0.01,0.01,0.01,0.00,0.00,0.00,0.00,0.01,0.01,0.01,0.01,0.01,0.00,0.00,0.01,0.01,0.01,0.01,0.00,0.01,0.01,0.01,0.01,0.01,0.01,0.00,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.01,0.02,0.02,0.02,0.02,0.02,0.02,0.03,0.03,0.03,0.04,0.05,0.05,0.06,0.07,0.08,0.10,0.11,0.13,0.16,0.18,0.22,0.25,0.28,0.33,0.37,0.41,0.45,0.51,0.57,0.63,0.68,0.72,0.77,0.80,0.83,0.85,0.86,0.87,0.86,0.84,0.81,0.78,0.75,0.70,0.66,0.61,0.56,0.51,0.46,0.42,0.38,0.35,0.31,0.28,0.25,0.23,0.21,0.19,0.18,0.17,0.15,0.15,0.14,0.14,0.13,0.12,0.12,0.12,0.12,0.12,0.12,0.12,0.12,0.13,0.13,0.13,0.13,0.14,0.14,0.15,0.15,0.15,0.16,0.16,0.16,0.17,0.17,0.17,0.17,0.17,0.17,0.17,0.17,0.17,0.17,0.17,0.17,0.16,0.16,0.16,0.16,0.15,0.15,0.14,0.14,0.13,0.13,0.13,0.12,0.12,0.11,0.11,0.10,0.10,0.10,0.09,0.09,0.09,0.09,0.09,0.09,0.09,0.09,0.09,0.09,0.09,0.09,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.10,0.09,0.09,0.09,0.09,0.09,0.09,0.08,0.08,0.08,0.08,0.08,0.07,0.07,0.07,0.06,0.06,0.06,0.06,0.06,0.06,0.05,0.05,0.05,0.05,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.02,0.02,0.02,0.02,0.03,0.02,0.02,0.02,0.03,0.02,0.03,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.01,0.02,0.02,0.02,0.01,0.02,0.02,0.02,0.02,0.01,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.03,0.03,0.03,0.03,0.04,0.05,0.05,0.06,0.07,0.08,0.10,0.11,0.13,0.16,0.19,0.23,0.26,0.31,0.36,0.41,0.48,0.54,0.60,0.67,0.74,0.80,0.85,0.90,0.94,0.97,0.99,1.00,1.00,0.99,0.98,0.96,0.93,0.91,0.88,0.85,0.83,0.81,0.79,0.77,0.76,0.75,0.75,0.75,0.75,0.75,0.76,0.76,0.76,0.77,0.77,0.77,0.76,0.76,0.75,0.74,0.73,0.72,0.70,0.69,0.67,0.65,0.64,0.62,0.60,0.58,0.57,0.55,0.54,0.53,0.53,0.52,0.52,0.51,0.51,0.51,0.51,0.51,0.52,0.52,0.52,0.52,0.52,0.52,0.52,0.52,0.52,0.52,0.52,0.52,0.52,0.51,0.51,0.50,0.50,0.50,0.49,0.48,0.47,0.46,0.46,0.44,0.43,0.42,0.42,0.41,0.40,0.39,0.38,0.37,0.37,0.36,0.35,0.35,0.35,0.34,0.33,0.33,0.32,0.31,0.31,0.30,0.30];
+
     function transmission_liquid(lambda, percentage) {
         let e_d = 0.85e5;
         let C = 3.5e-5*percentage;
         let d = 0.7;
-        return Math.pow(10, -e_d*d*C)*0.92;
+        if(percentage > 0)
+            return Math.pow(10, -e_d*d*C)*0.92*interpolate_nearest_grid(lambda, green_dye, 350.5, 800.2);
+        else
+            return Math.pow(10, -e_d*d*C)*0.92;
     }
     function ratio_to_angle(d) {
         return clamp(d*180-90, -5-90, 90+5);
     }
     function scale_min_max(d) {
-        return (d + getValue("slider2")/100) * (getValue("slider3")/100) * 3;
+        return (d + getValue("slider2")/100) * (getValue("slider3")/100) * 100;
     }
     let lambda = 0;
-    let use_band_glass = false;
-    let use_liquid = false;
+    let use_filter_glass = false;
+    let use_liquid_cuvette = false;
     let liquid_percentage = 1;
+    let current_displayed_value = undefined;
     function pipeline(lambda) {
+        // lamp intensity slider -> ray0 and lamp halo
         let intensity = getValue("slider0")/5;
         d3.select("#ray0").attr("opacity", clamp(intensity, 0, 1));
+        d3.select("#lamp_halo").attr("opacity", clamp(intensity, 0, 1));
 
+        // off/on slider, shutter and ray1
         intensity = intensity * getValue("sliderA")
         d3.select("#ray1").attr("opacity", clamp(intensity, 0, 1));
         d3.select("#shutter").attr("visibility", getValue("sliderA") ? "hidden" : "visible");
 
+        // rays in and after the prism
         d3.select(d3.select("#prism").node().parentNode).selectAll("line").attr("opacity", clamp(intensity, 0, 1));
 
+        // ray before the filter glass
         d3.select("#ray2").attr("opacity", clamp(intensity, 0, 1));
-        intensity = intensity;
-        console.log("Intensity_input", intensity);
-        if(use_band_glass)
+
+        // filter glass
+        d3.select("#band_filter").attr("visibility", use_filter_glass ? "visible" : "hidden");
+        if(use_filter_glass)
             intensity = intensity*band_absorption_glass(lambda);
         d3.select("#ray3").attr("opacity", clamp(intensity, 0, 1));
-        d3.select("#band_filter").attr("visibility", use_band_glass ? "visible" : "hidden");
+        d3.select("#ray34_1").style("stop-opacity", clamp(intensity, 0, 1));
 
-        console.log("Intensity_band_glass", intensity);
-        if(use_liquid)
+        // cuvette with liquid
+        if(use_liquid_cuvette)
             intensity = intensity*transmission_liquid(lambda, liquid_percentage);
         d3.select("#ray4").attr("opacity", clamp(intensity, 0, 1));
-        console.log("Intensity_liquid", intensity);
+        d3.select("#ray34_2").style("stop-opacity", clamp(intensity, 0, 1));
+        // min/max scale of the display
         intensity = scale_min_max(intensity);
-        console.log("Intensity_minmax", intensity);
         return intensity * get_tungsten_intensity(lambda);
     }
 
-    function lambda_to_color(Wavelength) {
-        const Gamma = 0.80;
-        const IntensityMax = 255;
-
-        let factor;
-        let Red, Green, Blue;
-
-        if((Wavelength >= 380) && (Wavelength < 440)) {
-            Red = -(Wavelength - 440) / (440 - 380);
-            Green = 0.0;
-            Blue = 1.0;
-        } else if((Wavelength >= 440) && (Wavelength < 490)) {
-            Red = 0.0;
-            Green = (Wavelength - 440) / (490 - 440);
-            Blue = 1.0;
-        } else if((Wavelength >= 490) && (Wavelength < 510)) {
-            Red = 0.0;
-            Green = 1.0;
-            Blue = -(Wavelength - 510) / (510 - 490);
-        } else if((Wavelength >= 510) && (Wavelength < 580)) {
-            Red = (Wavelength - 510) / (580 - 510);
-            Green = 1.0;
-            Blue = 0.0;
-        } else if((Wavelength >= 580) && (Wavelength < 645)) {
-            Red = 1.0;
-            Green = -(Wavelength - 645) / (645 - 580);
-            Blue = 0.0;
-        } else if((Wavelength >= 645) && (Wavelength < 781)) {
-            Red = 1.0;
-            Green = 0.0;
-            Blue = 0.0;
-        } else {
-            Red = 0.0;
-            Green = 0.0;
-            Blue = 0.0;
-        }
-
-        // Let the intensity fall off near the vision limits
-
-        if((Wavelength >= 380) && (Wavelength < 420)) {
-            factor = 0.3 + 0.7 * (Wavelength - 380) / (420 - 380);
-        } else if((Wavelength >= 420) && (Wavelength < 701)) {
-            factor = 1.0;
-        } else if((Wavelength >= 701) && (Wavelength < 781)) {
-            factor = 0.3 + 0.7 * (780 - Wavelength) / (780 - 700);
-        } else {
-            factor = 0.0;
-        }
-
-
-        let rgb = [0, 0, 0];
-
-        // Don't want 0^x = 1 for x <> 0
-        rgb[0] = Red == 0.0 ? 0 : parseInt(Math.round(IntensityMax * Math.pow(Red * factor, Gamma)));
-        rgb[1] = Green == 0.0 ? 0 : parseInt(Math.round(IntensityMax * Math.pow(Green * factor, Gamma)));
-        rgb[2] = Blue == 0.0 ? 0 : parseInt(Math.round(IntensityMax * Math.pow(Blue * factor, Gamma)));
-
-        return `rgba(${parseInt(Red*255)}, ${parseInt(Green*255)}, ${parseInt(Blue*255)}, ${factor})`;
-        if(lambda > 650)
-            return `rgba(255, 0, 0, ${(700-lambda)/50})`;
-        return `hsl(${ (650 - lambda) * 270 / 250}, 100%, 50%)`;
-    }
 
     function updateSketch() {
-        use_band_glass = getValue("slider_filter");
-        use_liquid = parseFloat(document.getElementById("cuvette_input").value) > -1;
-        liquid_percentage = parseFloat(document.getElementById("cuvette_input").value)*use_liquid;
-        if(liquid_percentage != 0)
+        use_filter_glass = getValue("slider_filter");
+        use_liquid_cuvette = parseFloat(document.getElementById("cuvette_input").value) > -1;
+        liquid_percentage = parseFloat(document.getElementById("cuvette_input").value)*use_liquid_cuvette;
+        if(liquid_percentage !== 0)
             liquid_percentage = 1/liquid_percentage;
-        console.log("0.1*use_liquid + 0.4*liquid_percentage", 0.1*use_liquid + 0.4*liquid_percentage);
-        d3.select("#cuvette").style("fill-opacity", 0.1*use_liquid + 0.4*liquid_percentage);
+
+        d3.select("#cuvette").style("fill-opacity", 0.1*use_liquid_cuvette + 0.4*liquid_percentage);
         for(let concentration of [0, 1, 2, 4, 8, 3])
             d3.select("#cuvette" + concentration).style("visibility", "visible");
         d3.select("#cuvette" + parseInt(document.getElementById("cuvette_input").value)).style("visibility", "hidden");
-        d3.select("#band_filter0").style("visibility", use_band_glass ? "hidden" : "visible");
+        d3.select("#band_filter0").style("visibility", use_filter_glass ? "hidden" : "visible");
 
         let d = getValue("slider1");
         d3.select("#slider1 label").text(`Lambda ${slider_to_wek(d)}`);
         d3.select("#slider0 label").text(`Intensity ${getValue("slider0")}`);
         d3.select("#arm").attr("transform", `rotate(${slider_to_angle(d)})`);
         lambda = slider_to_lambda(d);
-        d3.select("#display_arm").attr("transform", `rotate(${ratio_to_angle(pipeline(lambda))})`);
+        current_displayed_value = pipeline(lambda);
+        d3.select("#display_arm").attr("transform", `rotate(${ratio_to_angle(current_displayed_value)})`);
         d3.select("#ray2").style("stroke", lambda_to_color(lambda));
         d3.select("#ray3").style("stroke", lambda_to_color(lambda));
         d3.select("#ray4").style("stroke", lambda_to_color(lambda));
-        console.log("lambda", lambda);
+        d3.select("#ray34_1").style("stop-color", lambda_to_color(lambda));
+        d3.select("#ray34_2").style("stop-color", lambda_to_color(lambda));
     }
     d3.selectAll("input").on("input", updateSketch);
 
-
+    let path = undefined;
+    window.test = function () {
+        if(path === undefined)
+            path = d3.select("svg").append("path");
+        let data = {x:[], y:[]}
+        for(let i of d3.range(0, 100, 2)) {
+            d3.select("#slider1 input").node().value = i;
+            updateSketch();
+            data.x.push(slider_to_wek(i));
+            //data.x.push(rescale(lambda, 350, 800, 5, 9));
+            data.y.push(current_displayed_value);
+            console.log(i, slider_to_wek(i), lambda, current_displayed_value);
+        }
+        let d = data;
+        let line = () => d3.line().x(d => d[0]*10).y(d => 10*d[1])(d3.zip(d.x, d.y));
+        path.attr("d", line);
+        path.attr("fill", "none");
+        path.attr("stroke", "red")
+    }
 </script>
 </body>
 </html>
