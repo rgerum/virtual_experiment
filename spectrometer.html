@@ -94,6 +94,12 @@
         // set the color of the cuvettes
         for(let concentration of [0, 1, 2, 4, 8, 3]) {
             d3.select("#cuvette" + concentration + "_content").style("fill-opacity", 0.1 + 0.4 * (1/concentration))
+            d3.select("#cuvette" + concentration)
+                .style("cursor", "pointer")
+                .on("click", () => {d3.select("#cuvette_input").node().value = concentration; updateSketch(); });
+            d3.select("#cuvette" + concentration + "_placeholder").style("cursor", "pointer")
+                .style("visibility", "hidden")
+                .on("click", () => {d3.select("#cuvette_input").node().value = -1; updateSketch(); });
         }
 
         // Flint
@@ -208,9 +214,12 @@
             liquid_percentage = 1/liquid_percentage;
 
         d3.select("#cuvette").style("fill-opacity", 0.1*use_liquid_cuvette + 0.4*liquid_percentage);
-        for(let concentration of [0, 1, 2, 4, 8, 3])
+        for(let concentration of [0, 1, 2, 4, 8, 3]) {
             d3.select("#cuvette" + concentration).style("visibility", "visible");
+            d3.select("#cuvette" + concentration + "_placeholder").style("visibility", "hidden");
+        }
         d3.select("#cuvette" + parseInt(document.getElementById("cuvette_input").value)).style("visibility", "hidden");
+        d3.select("#cuvette" + parseInt(document.getElementById("cuvette_input").value) + "_placeholder").style("visibility", "visible");
         d3.select("#band_filter0").style("visibility", use_filter_glass ? "hidden" : "visible");
 
         let d = getValue("slider1");

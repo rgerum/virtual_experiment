@@ -6,19 +6,14 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="118.87215mm"
    height="52.897282mm"
    viewBox="0 0 118.87215 52.897281"
    version="1.1"
-   id="svg8"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
-   sodipodi:docname="spektrometer.svg">
+   id="svg8">
   <defs
      id="defs2">
     <linearGradient
-       inkscape:collect="always"
        id="ray34">
       <stop
          style="stop-color:#000000;stop-opacity:1;"
@@ -30,7 +25,6 @@
          id="ray34_2" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient872">
       <stop
          style="stop-color:#ffffff;stop-opacity:1;"
@@ -42,7 +36,6 @@
          id="stop870" />
     </linearGradient>
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient872"
        id="linearGradient874"
        x1="118.86734"
@@ -52,7 +45,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.55401413,0.85187885,-0.86444119,0.54371148,136.21883,-56.930228)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient872"
        id="linearGradient2859-3"
        x1="96.549988"
@@ -62,7 +54,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(38.601741,-3.6750451)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient872"
        id="linearGradient2859-6"
        x1="96.549988"
@@ -72,7 +63,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="translate(25.767458,-111.1692)" />
     <linearGradient
-       inkscape:collect="always"
        xlink:href="#ray34"
        id="linearGradient955"
        x1="-38.826403"
@@ -82,7 +72,6 @@
        gradientUnits="userSpaceOnUse"
        gradientTransform="rotate(180,-36.926403,0.024516)" />
     <filter
-       inkscape:collect="always"
        style="color-interpolation-filters:sRGB"
        id="filter1716"
        x="-0.57159394"
@@ -90,49 +79,14 @@
        y="-0.59757538"
        height="2.1951508">
       <feGaussianBlur
-         inkscape:collect="always"
          stdDeviation="2.507494"
          id="feGaussianBlur1718" />
     </filter>
   </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="2.8284272"
-     inkscape:cx="250.5594"
-     inkscape:cy="175.22259"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:window-width="1848"
-     inkscape:window-height="1016"
-     inkscape:window-x="72"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1" />
   <metadata
      id="metadata5">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
-      </cc:Work>
-    </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-57.640347,-51.165501)">
     <ellipse
@@ -174,25 +128,15 @@
     <path
        style="fill:none;stroke:#000000;stroke-width:0.279;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m 113.59592,96.021173 39.14552,-0.181581"
-       id="ray1"
-       sodipodi:nodetypes="cc" />
+       id="ray1" />
     <g
        id="display"
        transform="matrix(2.6493875,0,0,2.6493875,-40.53063,-57.620048)">
       <path
          style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.155508;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.74;stroke-opacity:1"
          id="path2953"
-         sodipodi:type="arc"
-         sodipodi:cx="71.256042"
-         sodipodi:cy="-51.04554"
-         sodipodi:rx="7.9371271"
-         sodipodi:ry="8.004343"
-         sodipodi:start="0"
-         sodipodi:end="3.1415316"
-         sodipodi:arc-type="arc"
          d="m 79.19317,-51.04554 a 7.9371271,8.004343 0 0 1 -7.936885,8.004343 7.9371271,8.004343 0 0 1 -7.93737,-8.003854"
-         transform="scale(1,-1)"
-         sodipodi:open="true" />
+         transform="scale(1,-1)" />
       <g
          id="display_origin"
          transform="translate(71.241148,50.974465)">
@@ -207,8 +151,7 @@
           <path
              style="fill:#6e6e6e;fill-opacity:1;stroke:#000000;stroke-width:0.0714684;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
              d="m -0.00731009,-7.4783205 c 0,0 0.25425342,7.40956525 0.2415364,7.53188197 -0.012717,0.12231673 -0.0687959,0.2977344 -0.2415364,0.3036323 -0.17274052,0.005898 -0.23074611,-0.19296991 -0.24153639,-0.3036323 -0.0107903,-0.11066238 0.24153639,-7.53188197 0.24153639,-7.53188197 z"
-             id="path2959"
-             sodipodi:nodetypes="czzzc" />
+             id="path2959" />
         </g>
       </g>
     </g>
@@ -219,15 +162,13 @@
     <path
        style="fill:none;stroke:#000000;stroke-width:0.279;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        d="m 152.74144,95.839592 10.34789,0.01635"
-       id="ray0"
-       sodipodi:nodetypes="cc" />
+       id="ray0" />
     <g
        id="g961">
       <path
          style="fill:url(#linearGradient874);fill-opacity:1;stroke:#000000;stroke-width:0.269514px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          d="M 123.65785,92.970097 107.447,85.347886 108.81214,102.22094 Z"
-         id="prism"
-         sodipodi:nodetypes="cccc" />
+         id="prism" />
     </g>
     <g
        id="cuvette1"
@@ -238,23 +179,19 @@
         <path
            id="rect896"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 100.18944,57.557268 V 55.67105"
-           sodipodi:nodetypes="cc" />
+           d="M 100.18944,57.557268 V 55.67105" />
         <path
            id="cuvette1_content"
            style="fill:#0eac2c;fill-opacity:0.463132;stroke:#000000;stroke-width:0.235193;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207"
-           sodipodi:nodetypes="cccc" />
+           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207" />
         <path
            style="fill:#436652;fill-opacity:1;stroke:#000000;stroke-width:0.20984px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            d="m 100.21835,53.507783 0.22412,3.036185 2.37282,0.0045 0.26658,-3.056426 -2.86352,0.01577 z"
-           id="path894"
-           sodipodi:nodetypes="cccccc" />
+           id="path894" />
         <path
            id="rect896-3"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 103.07616,57.557268 V 55.671049"
-           sodipodi:nodetypes="cc" />
+           d="M 103.07616,57.557268 V 55.671049" />
       </g>
       <text
          xml:space="preserve"
@@ -263,7 +200,6 @@
          y="106.77699"
          id="text991"
          transform="rotate(-90)"><tspan
-           sodipodi:role="line"
            id="tspan989"
            x="-61.8176"
            y="106.77699"
@@ -278,23 +214,19 @@
         <path
            id="rect896-7"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 100.18944,57.557268 V 55.67105"
-           sodipodi:nodetypes="cc" />
+           d="M 100.18944,57.557268 V 55.67105" />
         <path
            id="cuvette2_content"
            style="fill:#0eac2c;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207"
-           sodipodi:nodetypes="cccc" />
+           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207" />
         <path
            style="fill:#436652;fill-opacity:1;stroke:#000000;stroke-width:0.20984px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            d="m 100.21835,53.507783 0.22412,3.036185 2.37282,0.0045 0.26658,-3.056426 -2.86352,0.01577 z"
-           id="path894-3"
-           sodipodi:nodetypes="cccccc" />
+           id="path894-3" />
         <path
            id="rect896-3-8"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 103.07616,57.557268 V 55.671049"
-           sodipodi:nodetypes="cc" />
+           d="M 103.07616,57.557268 V 55.671049" />
       </g>
       <text
          xml:space="preserve"
@@ -303,7 +235,6 @@
          y="106.77699"
          id="text991-8"
          transform="rotate(-90)"><tspan
-           sodipodi:role="line"
            id="tspan989-3"
            x="-61.8176"
            y="106.77699"
@@ -318,23 +249,19 @@
         <path
            id="rect896-9"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 100.18944,57.557268 V 55.67105"
-           sodipodi:nodetypes="cc" />
+           d="M 100.18944,57.557268 V 55.67105" />
         <path
            id="cuvette4_content"
            style="fill:#0eac2c;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207"
-           sodipodi:nodetypes="cccc" />
+           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207" />
         <path
            style="fill:#436652;fill-opacity:1;stroke:#000000;stroke-width:0.20984px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            d="m 100.21835,53.507783 0.22412,3.036185 2.37282,0.0045 0.26658,-3.056426 -2.86352,0.01577 z"
-           id="path894-4"
-           sodipodi:nodetypes="cccccc" />
+           id="path894-4" />
         <path
            id="rect896-3-3"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 103.07616,57.557268 V 55.671049"
-           sodipodi:nodetypes="cc" />
+           d="M 103.07616,57.557268 V 55.671049" />
       </g>
       <text
          xml:space="preserve"
@@ -343,7 +270,6 @@
          y="106.77699"
          id="text991-3"
          transform="rotate(-90)"><tspan
-           sodipodi:role="line"
            id="tspan989-38"
            x="-61.8176"
            y="106.77699"
@@ -358,23 +284,19 @@
         <path
            id="rect896-4"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 100.18944,57.557268 V 55.67105"
-           sodipodi:nodetypes="cc" />
+           d="M 100.18944,57.557268 V 55.67105" />
         <path
            id="cuvette8_content"
            style="fill:#0eac2c;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207"
-           sodipodi:nodetypes="cccc" />
+           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207" />
         <path
            style="fill:#436652;fill-opacity:1;stroke:#000000;stroke-width:0.20984px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            d="m 100.21835,53.507783 0.22412,3.036185 2.37282,0.0045 0.26658,-3.056426 -2.86352,0.01577 z"
-           id="path894-8"
-           sodipodi:nodetypes="cccccc" />
+           id="path894-8" />
         <path
            id="rect896-3-89"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 103.07616,57.557268 V 55.671049"
-           sodipodi:nodetypes="cc" />
+           d="M 103.07616,57.557268 V 55.671049" />
       </g>
       <text
          xml:space="preserve"
@@ -383,7 +305,6 @@
          y="106.77699"
          id="text991-7"
          transform="rotate(-90)"><tspan
-           sodipodi:role="line"
            id="tspan989-7"
            x="-61.8176"
            y="106.77699"
@@ -398,23 +319,19 @@
         <path
            id="rect896-0"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 100.18944,57.557268 V 55.67105"
-           sodipodi:nodetypes="cc" />
+           d="M 100.18944,57.557268 V 55.67105" />
         <path
            id="cuvette3_content"
            style="fill:#0eac2c;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207"
-           sodipodi:nodetypes="cccc" />
+           d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207" />
         <path
            style="fill:#436652;fill-opacity:1;stroke:#000000;stroke-width:0.20984px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
            d="m 100.21835,53.507783 0.22412,3.036185 2.37282,0.0045 0.26658,-3.056426 -2.86352,0.01577 z"
-           id="path894-0"
-           sodipodi:nodetypes="cccccc" />
+           id="path894-0" />
         <path
            id="rect896-3-9"
            style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-           d="M 103.07616,57.557268 V 55.671049"
-           sodipodi:nodetypes="cc" />
+           d="M 103.07616,57.557268 V 55.671049" />
       </g>
       <text
          xml:space="preserve"
@@ -423,7 +340,6 @@
          y="106.77699"
          id="text991-2"
          transform="rotate(-90)"><tspan
-           sodipodi:role="line"
            id="tspan989-5"
            x="-61.8176"
            y="106.77699"
@@ -440,23 +356,19 @@
           <path
              id="rect896-94"
              style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-             d="M 100.18944,57.557268 V 55.67105"
-             sodipodi:nodetypes="cc" />
+             d="M 100.18944,57.557268 V 55.67105" />
           <path
              id="cuvette0_content"
              style="fill:#0eac2c;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-             d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207"
-             sodipodi:nodetypes="cccc" />
+             d="m 103.07596,57.205474 v 7.974207 c -0.013,2.510453 -2.91862,2.407915 -2.88657,0 v -7.974207" />
           <path
              style="fill:#436652;fill-opacity:1;stroke:#000000;stroke-width:0.20984px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
              d="m 100.21835,53.507783 0.22412,3.036185 2.37282,0.0045 0.26658,-3.056426 -2.86352,0.01577 z"
-             id="path894-2"
-             sodipodi:nodetypes="cccccc" />
+             id="path894-2" />
           <path
              id="rect896-3-2"
              style="fill:none;fill-opacity:0.227451;stroke:#000000;stroke-width:0.235193;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-             d="M 103.07616,57.557268 V 55.671049"
-             sodipodi:nodetypes="cc" />
+             d="M 103.07616,57.557268 V 55.671049" />
         </g>
         <text
            xml:space="preserve"
@@ -465,7 +377,6 @@
            y="106.58994"
            id="text991-4"
            transform="rotate(-90)"><tspan
-             sodipodi:role="line"
              id="tspan989-77"
              x="-62.145004"
              y="106.58994"
@@ -534,18 +445,15 @@
         <path
            style="fill:none;stroke:#000000;stroke-width:0.265;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            d="M -34.133149,0.02480655 H -0.00779744"
-           id="ray2"
-           sodipodi:nodetypes="cc" />
+           id="ray2" />
         <path
            style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            d="m -34.133149,0.024516 h -0.893254"
-           id="ray3"
-           sodipodi:nodetypes="cc" />
+           id="ray3" />
         <path
            style="fill:none;stroke:#000000;stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            d="m -38.826403,0.024516 h -3.217912"
-           id="ray4"
-           sodipodi:nodetypes="cc" />
+           id="ray4" />
         <rect
            style="fill:#0eac2c;fill-opacity:1;stroke:none;stroke-width:0.188547;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
            id="band_filter"
@@ -569,8 +477,7 @@
         <path
            style="fill:none;stroke:url(#linearGradient955);stroke-width:0.264583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            d="m -38.826403,0.024516 h 3.8"
-           id="ray4-3"
-           sodipodi:nodetypes="cc" />
+           id="ray4-3" />
       </g>
     </g>
     <rect
@@ -588,5 +495,29 @@
        rx="1.5773625"
        ry="6.649622"
        transform="rotate(45)" />
+    <path
+       id="cuvette3_placeholder"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.235;stroke-miterlimit:4;stroke-dasharray:0.235, 0.23499999999999999;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 90.330315,87.706723 -2.863911,0.0155 0.159681,2.163175 h -0.188619 v 9.508979 c -0.03205,2.407913 2.873649,2.510453 2.886649,0 v -9.508979 h -0.18397 z" />
+    <path
+       id="cuvette8_placeholder"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.235;stroke-miterlimit:4;stroke-dasharray:0.235, 0.23499999999999999;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 86.063164,87.706723 -2.863911,0.0155 0.159681,2.163175 h -0.188619 v 9.508979 c -0.03205,2.407913 2.873649,2.510453 2.886649,0 v -9.508979 h -0.18397 z" />
+    <path
+       id="cuvette4_placeholder"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.235;stroke-miterlimit:4;stroke-dasharray:0.235, 0.23499999999999999;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 81.796017,87.706723 -2.863911,0.0155 0.159681,2.163175 h -0.188619 v 9.508976 c -0.03205,2.407916 2.873649,2.510456 2.886649,0 v -9.508976 h -0.18397 z" />
+    <path
+       id="cuvette2_placeholder"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.235;stroke-miterlimit:4;stroke-dasharray:0.235, 0.23499999999999999;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 77.528791,87.706724 -2.863911,0.0155 0.159681,2.163175 h -0.188619 v 9.508977 c -0.03205,2.407914 2.873649,2.510454 2.886649,0 v -9.508977 h -0.18397 z" />
+    <path
+       id="cuvette1_placeholder"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.235;stroke-miterlimit:4;stroke-dasharray:0.235, 0.23499999999999999;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 73.261713,87.706723 -2.863911,0.0155 0.159681,2.163175 h -0.188619 v 9.508975 c -0.03205,2.407917 2.873649,2.510457 2.886649,0 v -9.508975 h -0.18397 z" />
+    <path
+       id="cuvette0_placeholder"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.235;stroke-miterlimit:4;stroke-dasharray:0.235, 0.23499999999999999;stroke-dashoffset:0;stroke-opacity:1"
+       d="m 68.994561,87.706723 -2.863911,0.0155 0.159681,2.163175 h -0.188619 v 9.508978 c -0.03205,2.407914 2.873649,2.510454 2.886649,0 v -9.508978 h -0.18397 z" />
   </g>
 </svg>
