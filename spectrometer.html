@@ -101,6 +101,10 @@
                 .style("visibility", "hidden")
                 .on("click", () => {d3.select("#cuvette_input").node().value = -1; updateSketch(); });
         }
+        d3.select("#band_placeholder").style("visibility", "hidden").style("cursor", "pointer")
+            .on("click", () => {d3.select("#input_filter").node().value = 0; updateSketch(); });
+        d3.select("#band_filter0").style("cursor", "pointer")
+            .on("click", () => {d3.select("#input_filter").node().value = 1; updateSketch(); });
 
         // Flint
         let B1 = 1.216;
@@ -221,6 +225,7 @@
         d3.select("#cuvette" + parseInt(document.getElementById("cuvette_input").value)).style("visibility", "hidden");
         d3.select("#cuvette" + parseInt(document.getElementById("cuvette_input").value) + "_placeholder").style("visibility", "visible");
         d3.select("#band_filter0").style("visibility", use_filter_glass ? "hidden" : "visible");
+        d3.select("#band_placeholder").style("visibility", use_filter_glass ? "visible" : "hidden");
 
         let d = getValue("slider1");
         d3.select("#slider1 label").text(`Lambda ${slider_to_wek(d)}`);
