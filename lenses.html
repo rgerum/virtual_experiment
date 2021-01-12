@@ -24,7 +24,7 @@
 </header>
 
 <div class="container">
-    <img style="width:100%; height: auto" id="sketch" src="optical.svg" />
+    <img style="width:100%; height: auto" id="sketch" src="lenses/optical.svg" />
 </div>
 <div class="container">
 
@@ -39,27 +39,157 @@
         </select>
     </div>
 
+
+
+
     <div id="slider1" class="property">
         <label>Linse bei 0cm</label>
-        <input type="range" min="0" max="120" value="50" class="slider">
+        <input type="range" min="0" max="1200" value="500" class="slider">
     </div>
     <div id="slider2" class="property">
         <label>Schirm bei 0cm</label>
-        <input type="range" min="0" max="120" value="100" class="slider">
+        <input type="range" min="0" max="1200" value="1000" class="slider">
     </div>
 
+    <div class="property">
+        <label for="filter_chooser">Filter</label><br/>
+        <select value="-" name="filter_chooser" id="filter_chooser" oninput="filter_changed();">
+            <option value="">-</option>
+            <option value="red">red</option>
+            <option value="blue">blue</option>
+            <option value="aperture">aperture</option>
+            <option value="ring">ring</option>
+        </select>
+    </div>
+
+    <div class="property">
+        <label for="image_chooser">Image</label><br/>
+        <select value="apple" name="image_chooser" id="image_chooser" oninput="image_changed();">
+            <option value="apple">apple</option>
+            <option value="grid">grid</option>
+        </select>
+    </div>
+    <br/>
+
     <div id="lens_plot" style="display: inline-block"></div>
+    <!--
     <div style="width:255px; heigth: 255px; overflow: hidden; border: 2px solid black; display: inline-block">
-        <img id="image0" style="width: 255px;" src="https://freshgoldsa.co.za/wp-content/uploads/2012/07/Appel.Foto_-300x300.jpg"/>
+        <img id="image0" style="width: 255px;" src="lenses/apple.png"/>
     </div>
     <div style="width:255px; heigth: 255px; overflow: hidden; border: 2px solid black; display: inline-block">
-        <img id="image" style="width: 255px;" src="https://freshgoldsa.co.za/wp-content/uploads/2012/07/Appel.Foto_-300x300.jpg"/>
+        <img id="image1" style="width: 255px;" src="lenses/apple.png"/>
     </div>
+    -->
+
+    <svg viewBox="0 0 300 300" style="width: 250px;height: 250px;border: 2px solid black;">
+        <g transform="translate(150 150)">
+            <image id="im_source" x=-150 y=-150 width=300 height=300 xlink:href="lenses/apple1.png"/>
+        </g>
+    </svg>
+
+    <svg viewBox="0 0 300 300" style="width: 250px;height: 250px;border: 2px solid black;">
+        <filter id="filter_image_transform">
+            <feColorMatrix id="target_color"
+                    type="matrix"
+                    values="1 0 0 0 0
+                            0 1 0 0 0
+                            0 0 1 0 0
+                            0 0 0 1 0" in="SourceGraphic" result="colored"/>
+            <feGaussianBlur id="target_blur" in="colored" stdDeviation="0"/>
+        </filter>
+        <rect id="target_background" width="300" height="300" fill="white"/>
+
+        <mask id="mask_border">
+            <!-- Everything under a white pixel will be visible -->
+            <rect x=-150 y=-150 width="300" height="300" fill="white" />
+        </mask>
+
+        <g transform="translate(150 150)" mask="url(#mask_border)">
+            <g id="target_scaler">
+                <g filter="url(#filter_image_transform)">
+                    <mask id="mask_aperture">
+                        <!-- Everything under a white pixel will be visible -->
+                        <circle x="300" y="300" r="30" fill="white" />
+                    </mask>
+                    <mask id="mask_ring">
+                        <circle x="300" y="300" r="50" stroke="white" stroke-width="30" />
+                    </mask>
+                    <image id="im_masked" x=-150 y=-150 width=300 height=300 xlink:href="lenses/apple1.png"/>
+                </g>
+            </g>
+        </g>
+    </svg>
+
+<!--
+    <svg viewBox="0 0 300 300" style="width: 250px;height: 250px;border: 2px solid black; ">
+        <style>
+            #im_red, #im_green, #im_blue { mix-blend-mode: screen; }
+        </style>
+        <defs>
+            <filter id="red">
+                <feColorMatrix type="matrix"
+                               values="1 0 0 0 0
+              0 0 0 0 0
+              0 0 0 0 0
+              0 0 0 1 0" in="SourceGraphic" result="red"/>
+                <feGaussianBlur in="red" stdDeviation="0"/>
+            </filter>
+            <filter id="green">
+                <feColorMatrix type="matrix"
+                               values="0 0 0 0 0
+              0 1 0 0 0
+              0 0 0 0 0
+              0 0 0 1 0" in="SourceGraphic" result="green"/>
+                <feGaussianBlur in="green" stdDeviation="0"/>
+            </filter>
+            <filter id="blue">
+                <feColorMatrix type="matrix"
+                               values="0 0 0 0 0
+              0 0 0 0 0
+              0 0 1 0 0
+              0 0 0 1 0" in="SourceGraphic" result="blue"/>
+                <feGaussianBlur in="blue" stdDeviation="0"/>
+            </filter>
+        </defs>
+        <g transform="translate(150 150)">
+            <g id="group_im_red">
+                <mask id="mask_im_red">
+                    <rect id="mask_im_red_rect" x="-300" y="-300" width="600" height="600" fill="white" />
+                </mask>
+                <image id="im_red" x=-300 y=-300 width=600 height=600 mask="url(#mask_im_red)" filter="url(#red)" xlink:href="lenses/apple1.png"/>
+            </g>
+            <g id="group_im_green">
+                <mask id="mask_im_green">
+                    <rect id="mask_im_green_rect" x="-300" y="-300" width="600" height="600" fill="white" />
+                </mask>
+                <image id="im_green" x=-300 y=-300 width=600 height=600 mask="url(#mask_im_red)" filter="url(#green)" xlink:href="lenses/apple1.png"/>
+            </g>
+<! --            <g id="group_im_blue">
+                <mask id="mask_im_blue">
+                    <rect x="-300" y="-300" width="600" height="600" fill="white" />
+                </mask>
+                <image id="im_blue" x=-300 y=-300 width="600" height="600" mask="url(#mask_im_blue)"  filter="url(#blue)" xlink:href="lenses/apple1.png"/>
+            </g>-- >
+        </g>
+    </svg>
+    -->
 
 </div>
 <script>
     function clamp(num, min, max) {
         return num <= min ? min : num >= max ? max : num;
+    }
+    function image_changed() {
+        setImage(document.getElementById("image_chooser").value+".png");
+    }
+    function setImage(name) {
+        for(let id of ["#image0", "#image1"]) {
+            d3.select(id).attr("src", "lenses/"+name);
+            d3.select(id+"a").attr("xlink:href", "lenses/"+name);
+        }
+        for(let id of ["#im_source", "#im_masked"]) {
+            d3.select(id).attr("xlink:href", "lenses/"+name);
+        }
     }
 
     async function loadLSTMSvg() {
@@ -74,8 +204,9 @@
         u.enter().append("line").merge(u).attr("x1", d=>(d+25)).attr("x2", d=>(d+25)).attr("y1", 0).attr("y2", 2).style("stroke-width", 0.5).attr("stroke", "black");
         u.exit().remove();
 
+        image_changed();
         lense_changed();
-        updateSketch();
+        //updateSketch();
     }
     loadLSTMSvg();
 
@@ -122,6 +253,8 @@
         [100, 10],
     ]
 
+    lense_factor = 1;
+    center_factor = 1;
     const lens_defs = {
         "L1": 9,
         "L2": -7.5,
@@ -130,21 +263,69 @@
         "L2L6": 1/(-1/7.5 + 1/6),
     }
 
+    lense_name = "";
     function lense_changed() {
         for(let lensname in lens_defs)
             d3.select("#"+lensname).style("visibility", "hidden");
         let name = document.getElementById("lense_chooser").value;
         d3.select("#"+name).style("visibility", "visible");
-        elements[0][1] = parseFloat(lens_defs[name]);
+        lense_name = name;
+        elements[0][1] = parseFloat(lens_defs[lense_name])*lense_factor;
+        updateSketch();
+    }
+
+    let filter = "";
+    function filter_changed() {
+        let name = document.getElementById("filter_chooser").value;
+        filter = name;
+        lense_factor = 1;
+        center_factor = 1;
+        if(filter != "red" && filter != "blue") {
+            d3.select("#target_color").attr("values",
+                "1 0 0 0 0 " +
+                "0 1 0 0 0 " +
+                "0 0 1 0 0 " +
+                "0 0 0 1 0 ")
+            d3.select("#target_background").attr("fill", "white")
+        }
+        else if(filter == "red") {
+            d3.select("#target_color").attr("values",
+                "1 0 0 0 0 " +
+                "0 0 0 0 0 " +
+                "0 0 0 0 0 " +
+                "0 0 0 1 0 ")
+            d3.select("#target_background").attr("fill", "red")
+            lense_factor = 0.9;
+        }
+        else if(filter == "blue") {
+            d3.select("#target_color").attr("values",
+                "0 0 0 0 0 " +
+                "0 0 0 0 0 " +
+                "0 0 1 0 0 " +
+                "0 0 0 1 0 ")
+            d3.select("#target_background").attr("fill", "blue")
+            lense_factor = 1.1;
+        }
+        if(filter != "aperture" && filter != "ring")
+            d3.select("#im_masked").attr("mask", "")
+        else if(filter == "ring") {
+            d3.select("#im_masked").attr("mask", "url(#mask_ring)")
+            center_factor = 1;
+            lense_factor = 1.05;
+        }
+        else if(filter == "aperture") {
+            d3.select("#im_masked").attr("mask", "url(#mask_aperture)")
+        }
+        elements[0][1] = parseFloat(lens_defs[lense_name])*lense_factor;
         updateSketch();
     }
 
     function calculateRays() {
         // define the rays
         let rays = [[
-            [0, 1, 0],
-            [0, 1, Math.atan(1/elements[0][0])],
-            [0, 1, Math.atan(1/(elements[0][0]-elements[0][1]))],
+            [0, center_factor, 0],
+            [0, center_factor, Math.atan(1/elements[0][0])],
+            [0, center_factor, Math.atan(1/(elements[0][0]-elements[0][1]))],
         ]];
 
         // iterate over all elements
@@ -176,7 +357,7 @@
     // slicer lens
     let slider1 = d3.select("#slider1 input").node();
     slider1.oninput = function() {
-        elements[0][0] = clamp(parseFloat(this.value), 3, elements[1][0]-3);
+        elements[0][0] = clamp(parseFloat(this.value)/10, 3, elements[1][0]-3);
         updateSketch();
     };
     slider1.value = elements[0][0];
@@ -184,7 +365,7 @@
     // slider screen
     let slider2 = d3.select("#slider2 input").node();
     slider2.oninput = function() {
-        elements[1][0] = clamp(parseFloat(this.value), elements[0][0]+3, 120);
+        elements[1][0] = clamp(parseFloat(this.value)/10, elements[0][0]+3, 120);
         updateSketch();
     };
     slider2.value = elements[1][0];
@@ -201,13 +382,77 @@
         var diff = rays[rays.length-1][0][1]-rays[rays.length-1][rays[0].length-1][1];
         var mean = (rays[rays.length-1][0][1]+rays[rays.length-1][rays[0].length-1][1])/2;
         // blur and scale the images
-        document.getElementById("image").style.filter = "blur("+Math.abs(diff*10)+"px)"
-        document.getElementById("image").style.transform = "scale("+mean+")"
+        /*
+        document.getElementById("image1").style.filter = "blur("+Math.abs(diff*10)+"px)"
+        document.getElementById("image1").style.transform = "scale("+mean+")"
+        */
+        mean = mean/center_factor;
+
         d3.select("#f1").select("feGaussianBlur").attr("stdDeviation", Math.abs(diff)/2);
         d3.select("#image_scaler").style("transform", `scale(${mean})`);
+
+        d3.select("#target_blur").attr("stdDeviation", Math.abs(diff*10));
+        d3.select("#target_scaler").style("transform", `scale(${mean})`);
         // update the text of the element positions
-        d3.select("#slider1 label").text(`Linse bei ${elements[0][0].toString().padStart(3, '\u2007')}cm`)
-        d3.select("#slider2 label").text(`Schirm bei ${elements[1][0].toString().padStart(3, '\u2007')}cm`)
+        d3.select("#slider1 label").text(`Linse bei ${elements[0][0].toFixed(1).padStart(3, '\u2007')}cm`)
+        d3.select("#slider2 label").text(`Schirm bei ${elements[1][0].toFixed(1).padStart(3, '\u2007')}cm`)
+
+        console.log(mean, diff);
+
+        return;
+
+        let factor = 1;
+        let name = "1";
+        /*
+        let abs_mean = Math.abs(mean);
+        if(abs_mean < 1/32*1.1) { factor = 1/32; name="32"; }
+        else if(abs_mean < 1/16*1.1) { factor = 1/16; name="16"; }
+        else if(abs_mean < 1/8*1.1) { factor = 1/8; name="8"; }
+        else if(abs_mean < 1/4*1.1) { factor = 1/4; name="4"; }
+        else if(abs_mean < 1/2*1.1) { factor = 1/2; name="2"; }
+        else if(abs_mean > 2*1.1) { factor = 2; name="05"; }
+        else if(abs_mean > 4*1.1) { factor = 4; name="025"; }
+        console.log(abs_mean, factor, name);
+        for(let id of ["#im_red", "#im_green", "#im_blue"]) {
+            d3.select(id).attr("xlink:href", "lenses/apple"+name+".png");
+        }*/
+
+        if(filter != "blue") {
+            d3.select("#im_red").attr("transform", `scale(${mean / factor})`)
+            d3.select("#mask_im_red").attr("transform", `scale(${mean / factor * 0.9})`)
+            d3.select("#mask_im_green").attr("transform", `scale(${mean / factor * 0.9})`)
+
+            d3.select("#red").select("feGaussianBlur").attr("stdDeviation", `${Math.abs(diff * 10 * factor)}`);
+        }
+        else
+            d3.select("#group_im_red").attr("transform", `scale(0)`)
+
+        var f = elements[0][1];
+        elements[0][1] = f*1.05
+        rays = calculateRays()
+        diff = rays[rays.length-1][0][1]-rays[rays.length-1][rays[0].length-1][1];
+        mean = (rays[rays.length-1][0][1]+rays[rays.length-1][rays[0].length-1][1])/2;
+
+        if(filter == "" || filter == "ring" || filter == "aperture") {
+            d3.select("#im_green").attr("transform", `scale(${mean / factor})`)
+            d3.select("#green").select("feGaussianBlur").attr("stdDeviation", `${Math.abs(diff * 10 * factor)}`);
+        }
+        else
+            d3.select("#group_im_green").attr("transform", `scale(0)`)
+
+        elements[0][1] = f*1.1
+        rays = calculateRays()
+        diff = rays[rays.length-1][0][1]-rays[rays.length-1][rays[0].length-1][1];
+        mean = (rays[rays.length-1][0][1]+rays[rays.length-1][rays[0].length-1][1])/2;
+
+        if(filter != "red") {
+            d3.select("#group_im_blue").attr("transform", `scale(${mean / factor})`)
+    //        d3.select("#blue").select("feGaussianBlur").attr("stdDeviation", `${Math.abs(diff * 10 * factor)}`);
+        }
+        else
+            d3.select("#group_im_blue").attr("transform", `scale(0)`)
+
+        elements[0][1] = f;
     }
 
 
