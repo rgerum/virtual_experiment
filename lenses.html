@@ -371,6 +371,9 @@
     slider2.value = elements[1][0];
 
     function updateSketch() {
+        window.requestAnimationFrame(doUpdateSktetch);
+    }
+    function doUpdateSktetch() {
         // move the lens and the screen
         d3.select("#lens1").style("transform", `translate(${elements[0][0]}px)`);
         d3.select("#screen").style("transform", `translate(${elements[1][0]}px)`);
