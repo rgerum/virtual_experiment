@@ -397,7 +397,7 @@
         d3.select("#f1").select("feGaussianBlur").attr("stdDeviation", Math.abs(diff)/2);
         d3.select("#image_scaler").style("transform", `scale(${mean})`);
 
-        //d3.select("#target_blur").attr("stdDeviation", Math.abs(diff*10));
+        d3.select("#target_blur").attr("stdDeviation", Math.abs(diff*10));
         d3.select("#target_scaler").style("transform", `scale(${mean})`);
         // update the text of the element positions
         d3.select("#slider1 label").text(`Linse bei ${elements[0][0].toFixed(1).padStart(3, '\u2007')}cm`)
