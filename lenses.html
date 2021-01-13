@@ -295,7 +295,7 @@
                 "0 0 0 0 0 " +
                 "0 0 0 1 0 ")
             d3.select("#target_background").attr("fill", "red")
-            lense_factor = 0.9;
+            lense_factor = 1.01;
         }
         else if(filter == "blue") {
             d3.select("#target_color").attr("values",
@@ -304,7 +304,7 @@
                 "0 0 1 0 0 " +
                 "0 0 0 1 0 ")
             d3.select("#target_background").attr("fill", "blue")
-            lense_factor = 1.1;
+            lense_factor = 0.99;
         }
         if(filter != "aperture" && filter != "ring")
             d3.select("#im_masked").attr("mask", "")
